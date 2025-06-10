@@ -12,7 +12,7 @@ public class Siswa {
     private String alamat;
     private String username; // Untuk memudahkan data terkait user
 
-    public Siswa(String nis, int idUser, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat) {
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, int idUser) {
         this.nis = nis;
         this.idUser = idUser;
         this.nama = nama;
@@ -22,7 +22,7 @@ public class Siswa {
         this.alamat = alamat;
     }
 
-    public Siswa(String nis, int idUser, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, String username) {
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, int idUser, String username) {
         this.nis = nis;
         this.idUser = idUser;
         this.nama = nama;

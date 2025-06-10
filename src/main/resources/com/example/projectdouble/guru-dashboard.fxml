@@ -20,7 +20,8 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="600.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectdouble.GuruDashboard">
+<AnchorPane prefHeight="600.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectdouble.controller.GuruController">
    <children>
       <Label fx:id="welcome" layoutX="14.0">
          <font>

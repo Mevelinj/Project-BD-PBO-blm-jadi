@@ -9,7 +9,7 @@ public class Guru {
     private String noHp;
     private String username; // Untuk memudahkan data terkait user
 
-    public Guru(String nip, int idUser, String nama, String jenisKelamin, String email, String noHp) {
+    public Guru(String nip, String nama, String jenisKelamin, String email, String noHp, int idUser) {
         this.nip = nip;
         this.idUser = idUser;
         this.nama = nama;
@@ -18,7 +18,7 @@ public class Guru {
         this.noHp = noHp;
     }
 
-    public Guru(String nip, int idUser, String nama, String jenisKelamin, String email, String noHp, String username) {
+    public Guru(String nip, String nama, String jenisKelamin, String email, String noHp, int idUser,  String username) {
         this.nip = nip;
         this.idUser = idUser;
         this.nama = nama;
