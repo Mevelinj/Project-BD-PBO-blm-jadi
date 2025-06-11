@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuruDAO {
+
+    private UserDAO userDao = new UserDAO(); // Digunakan untuk operasi terkait user
+
     /**
      * Menambahkan data guru baru ke database.
      * @param guru Objek Guru yang akan ditambahkan.
      * @return true jika berhasil, false jika gagal.
      */
     public boolean addGuru(Guru guru) {
+        // Menggunakan nama tabel lowercase 'guru'
         String sql = "INSERT INTO guru (nip, nama, jenis_kelamin, email, no_hp) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -28,7 +32,7 @@ public class GuruDAO {
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            System.err.println("Error saat menambahkan guru: " + e.getMessage());
+            System.err.println("Error saat menambahkan data guru: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -36,10 +40,11 @@ public class GuruDAO {
 
     /**
      * Memperbarui data guru di database.
-     * @param guru Objek Guru dengan data yang diperbarui.
+     * @param guru Objek Guru dengan data terbaru.
      * @return true jika berhasil, false jika gagal.
      */
     public boolean updateGuru(Guru guru) {
+        // Menggunakan nama tabel lowercase 'guru'
         String sql = "UPDATE guru SET nama = ?, jenis_kelamin = ?, email = ?, no_hp = ? WHERE nip = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -51,59 +56,10 @@ public class GuruDAO {
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            System.err.println("Error saat memperbarui guru: " + e.getMessage());
+            System.err.println("Error saat memperbarui data guru: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * Menghapus data guru dari database.
-     * @param nip NIP guru yang akan dihapus.
-     * @return true jika berhasil, false jika gagal.
-     */
-    public boolean deleteGuru(String nip) {
-        String sql = "DELETE FROM guru WHERE nip = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, nip);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error saat menghapus guru: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Mengambil semua data guru dari database.
-     * @return List objek Guru.
-     */
-    public List<Guru> getAllGuru() {
-        List<Guru> guruList = new ArrayList<>();
-        // Query untuk mengambil guru, dan juga id_user dan username dari tabel users
-        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username " +
-                "FROM guru g LEFT JOIN users u ON g.nip = u.username AND u.role = (SELECT id_role FROM role WHERE nama_role = 'Guru')";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                String nip = rs.getString("nip");
-                String nama = rs.getString("nama");
-                String jenisKelamin = rs.getString("jenis_kelamin");
-                String email = rs.getString("email");
-                String noHp = rs.getString("no_hp");
-                int idUser = rs.getInt("id_user"); // Akan 0 jika NULL
-                String usernameUser = rs.getString("username"); // Akan null jika tidak ada user
-
-                guruList.add(new Guru(nip, nama, jenisKelamin, email, noHp, idUser, usernameUser));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error saat mengambil semua guru: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return guruList;
     }
 
     /**
@@ -112,23 +68,23 @@ public class GuruDAO {
      * @return Objek Guru jika ditemukan, null jika tidak.
      */
     public Guru getGuruByNip(String nip) {
-        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username " +
-                "FROM guru g LEFT JOIN users u ON g.nip = u.username AND u.role = (SELECT id_role FROM role WHERE nama_role = 'Guru') WHERE g.nip = ?";
+        // Menggunakan nama tabel lowercase 'guru' dan 'users'
+        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username, u.password " +
+                "FROM guru g LEFT JOIN users u ON g.nip = u.username WHERE g.nip = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nip);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                int idUser = rs.getInt("id_user");
-                String usernameUser = rs.getString("username");
                 return new Guru(
                         rs.getString("nip"),
+                        (Integer) rs.getObject("id_user"), // idUser bisa null
                         rs.getString("nama"),
                         rs.getString("jenis_kelamin"),
                         rs.getString("email"),
                         rs.getString("no_hp"),
-                        idUser,
-                        usernameUser
+                        rs.getString("username"), // username_user bisa null
+                        rs.getString("password") // password_user bisa null
                 );
             }
         } catch (SQLException e) {
@@ -139,29 +95,63 @@ public class GuruDAO {
     }
 
     /**
-     * Mencari guru berdasarkan NIP atau Nama.
+     * Mengambil semua data guru dari database.
+     * @return List objek Guru.
+     */
+    public List<Guru> getAllGuru() {
+        List<Guru> guruList = new ArrayList<>();
+        // Menggunakan nama tabel lowercase 'guru' dan 'users'
+        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username, u.password " +
+                "FROM guru g LEFT JOIN users u ON g.nip = u.username";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                guruList.add(new Guru(
+                        rs.getString("nip"),
+                        (Integer) rs.getObject("id_user"), // idUser bisa null
+                        rs.getString("nama"),
+                        rs.getString("jenis_kelamin"),
+                        rs.getString("email"),
+                        rs.getString("no_hp"),
+                        rs.getString("username"), // username_user bisa null
+                        rs.getString("password") // password_user bisa null
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saat mengambil semua data guru: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return guruList;
+    }
+
+    /**
+     * Mencari guru berdasarkan keyword di nama atau NIP.
      * @param keyword Kata kunci pencarian.
      * @return List objek Guru yang cocok.
      */
     public List<Guru> searchGuru(String keyword) {
         List<Guru> guruList = new ArrayList<>();
-        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username " +
-                "FROM guru g LEFT JOIN users u ON g.nip = u.username AND u.role = (SELECT id_role FROM role WHERE nama_role = 'Guru') " +
-                "WHERE g.nip ILIKE ? OR g.nama ILIKE ?";
+        // Menggunakan nama tabel lowercase 'guru' dan 'users'
+        String sql = "SELECT g.nip, g.nama, g.jenis_kelamin, g.email, g.no_hp, u.id_user, u.username, u.password " +
+                "FROM guru g LEFT JOIN users u ON g.nip = u.username " +
+                "WHERE g.nama ILIKE ? OR g.nip ILIKE ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, "%" + keyword + "%");
             stmt.setString(2, "%" + keyword + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String nip = rs.getString("nip");
-                String nama = rs.getString("nama");
-                String jenisKelamin = rs.getString("jenis_kelamin");
-                String email = rs.getString("email");
-                String noHp = rs.getString("no_hp");
-                int idUser = rs.getInt("id_user");
-                String usernameUser = rs.getString("username");
-                guruList.add(new Guru(nip, nama, jenisKelamin, email, noHp, idUser, usernameUser));
+                guruList.add(new Guru(
+                        rs.getString("nip"),
+                        (Integer) rs.getObject("id_user"), // idUser bisa null
+                        rs.getString("nama"),
+                        rs.getString("jenis_kelamin"),
+                        rs.getString("email"),
+                        rs.getString("no_hp"),
+                        rs.getString("username"), // username_user bisa null
+                        rs.getString("password") // password_user bisa null
+                ));
             }
         } catch (SQLException e) {
             System.err.println("Error saat mencari guru: " + e.getMessage());
@@ -171,23 +161,49 @@ public class GuruDAO {
     }
 
     /**
-     * Memperbarui id_user di tabel guru setelah user dibuat.
-     * @param guru Objek Guru dengan id_user yang sudah diatur.
+     * Menghapus data guru dari database.
+     * Ini juga akan menghapus user terkait jika ada.
+     * @param nip NIP guru yang akan dihapus.
      * @return true jika berhasil, false jika gagal.
      */
-    public boolean updateGuruUser(Guru guru) {
-        String sql = "UPDATE guru SET id_user = ? WHERE nip = ?";
+    public boolean deleteGuru(String nip) {
+        Guru guruToDelete = getGuruByNip(nip); // Ambil data guru lengkap
+        if (guruToDelete == null) {
+            System.err.println("Guru dengan NIP " + nip + " tidak ditemukan untuk dihapus.");
+            return false;
+        }
+
+        // Hapus entri terkait dari tabel 'pembina' (jika ada)
+        String sqlDeletePembina = "DELETE FROM pembina WHERE nip = ?";
         try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, guru.getIdUser());
-            stmt.setString(2, guru.getNip());
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+             PreparedStatement stmtPembina = conn.prepareStatement(sqlDeletePembina)) {
+            stmtPembina.setString(1, nip);
+            stmtPembina.executeUpdate(); // Lanjutkan meskipun tidak ada baris yang terpengaruh
         } catch (SQLException e) {
-            System.err.println("Error saat memperbarui id_user guru: " + e.getMessage());
+            System.err.println("Error saat menghapus entri pembina untuk guru dengan NIP " + nip + ": " + e.getMessage());
+            e.printStackTrace();
+            // Lanjutkan eksekusi meskipun ada error di sini, karena penghapusan guru mungkin tetap ingin dilakukan
+        }
+
+        // Hapus guru dari tabel guru
+        String sqlGuru = "DELETE FROM guru WHERE nip = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmtGuru = conn.prepareStatement(sqlGuru)) {
+            stmtGuru.setString(1, nip);
+            int rowsAffectedGuru = stmtGuru.executeUpdate();
+
+            if (rowsAffectedGuru > 0) {
+                // Jika guru berhasil dihapus, hapus juga user terkait jika ada
+                if (guruToDelete.getIdUser() != null && guruToDelete.getIdUser() != 0) {
+                    userDao.deleteUser(guruToDelete.getIdUser());
+                }
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            System.err.println("Error saat menghapus guru: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
-
 }

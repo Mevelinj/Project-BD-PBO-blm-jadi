@@ -133,7 +133,7 @@
                            </font>
                         </Label>
                         <ComboBox layoutX="124.0" layoutY="17.0" prefWidth="150.0" />
-                        <TableView layoutX="29.0" layoutY="98.0" prefHeight="343.0" prefWidth="866.0">
+                        <TableView layoutX="29.0" layoutY="63.0" prefHeight="378.0" prefWidth="866.0">
                           <columns>
                             <TableColumn prefWidth="254.00003051757812" text="TITLE " />
                             <TableColumn prefWidth="316.6666259765625" text="DESCRIPTION" />
@@ -164,7 +164,7 @@
                               <ComboBox prefHeight="25.0" prefWidth="264.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
-                        <TableView layoutX="404.0" layoutY="27.0" prefHeight="315.0" prefWidth="495.0">
+                        <TableView layoutX="404.0" layoutY="27.0" prefHeight="422.0" prefWidth="495.0">
                            <columns>
                               <TableColumn prefWidth="183.3333740234375" text="EXTRACURRICULAR" />
                               <TableColumn prefWidth="147.33331298828125" text="LEVEL" />
@@ -259,7 +259,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="27.0" layoutY="125.0" prefHeight="322.0" prefWidth="867.0">
+                        <TableView layoutX="27.0" layoutY="79.0" prefHeight="368.0" prefWidth="867.0">
                            <columns>
                               <TableColumn prefWidth="246.6666374206543" text="SUBJECT" />
                               <TableColumn prefWidth="317.3333435058594" text="EXAM" />
@@ -286,19 +286,24 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="45.0" layoutY="162.0" prefHeight="290.0" prefWidth="831.0">
+                        <TableView layoutX="45.0" layoutY="88.0" prefHeight="364.0" prefWidth="831.0">
                            <columns>
                               <TableColumn prefWidth="369.3333168029785" text="DATE" />
                               <TableColumn prefWidth="460.6666564941406" text="STATUS" />
                            </columns>
                         </TableView>
-                        <Label layoutX="14.0" layoutY="16.0" text="School Year:">
+                        <Label layoutX="62.0" layoutY="29.0" text="Semester: ">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <ComboBox layoutX="148.0" layoutY="19.0" prefHeight="25.0" prefWidth="154.0" />
-                        <ComboBox layoutX="150.0" layoutY="48.0" prefHeight="25.0" prefWidth="154.0" promptText="GANJIL/GENAP" />
+                        <ComboBox layoutX="170.0" layoutY="34.0" prefWidth="150.0" />
+                        <TextField layoutX="692.0" layoutY="30.0" />
+                        <Label layoutX="613.0" layoutY="26.0" text="Class:">
+                           <font>
+                              <Font size="22.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
                </content>

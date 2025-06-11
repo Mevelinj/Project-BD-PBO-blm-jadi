@@ -2,29 +2,43 @@ package com.example.projectdouble.model;
 
 public class Pembina {
     private int idPembina;
-    private String nip; // NIP Guru
+    private String nipGuru; // NIP Guru
     private int idEkstrakurikuler;
 
-    // Untuk memudahkan tampilan
+    // Field tambahan untuk kemudahan tampilan (diisi dari hasil JOIN di DAO)
     private String namaGuru;
     private String namaEkstrakurikuler;
 
-    public Pembina(int idPembina, String nip, int idEkstrakurikuler) {
+    /**
+     * Konstruktor untuk membuat objek Pembina baru (misalnya saat akan ditambahkan ke database).
+     * id_pembina akan di-generate oleh database.
+     * @param idPembina ID Pembina (gunakan 0 atau nilai placeholder jika auto-generated).
+     * @param nipGuru NIP Guru yang menjadi pembina.
+     * @param idEkstrakurikuler ID Ekstrakurikuler yang dibina.
+     */
+    public Pembina(int idPembina, String nipGuru, int idEkstrakurikuler) {
         this.idPembina = idPembina;
-        this.nip = nip;
+        this.nipGuru = nipGuru;
         this.idEkstrakurikuler = idEkstrakurikuler;
     }
 
-    // Constructor dengan nama-nama terkait
-    public Pembina(int idPembina, String nip, String namaGuru, int idEkstrakurikuler, String namaEkstrakurikuler) {
+    /**
+     * Konstruktor lengkap untuk membuat objek Pembina (biasanya dari data yang diambil dari database).
+     * @param idPembina ID Pembina.
+     * @param nipGuru NIP Guru yang menjadi pembina.
+     * @param namaGuru Nama Guru pembina (untuk tampilan).
+     * @param idEkstrakurikuler ID Ekstrakurikuler yang dibina.
+     * @param namaEkstrakurikuler Nama Ekstrakurikuler yang dibina (untuk tampilan).
+     */
+    public Pembina(int idPembina, String nipGuru, String namaGuru, int idEkstrakurikuler, String namaEkstrakurikuler) {
         this.idPembina = idPembina;
-        this.nip = nip;
+        this.nipGuru = nipGuru;
         this.namaGuru = namaGuru;
         this.idEkstrakurikuler = idEkstrakurikuler;
         this.namaEkstrakurikuler = namaEkstrakurikuler;
     }
 
-    // Getters and Setters
+    // --- Getters and Setters ---
     public int getIdPembina() {
         return idPembina;
     }
@@ -33,12 +47,12 @@ public class Pembina {
         this.idPembina = idPembina;
     }
 
-    public String getNip() {
-        return nip;
+    public String getNipGuru() {
+        return nipGuru;
     }
 
-    public void setNip(String nip) {
-        this.nip = nip;
+    public void setNipGuru(String nipGuru) {
+        this.nipGuru = nipGuru;
     }
 
     public int getIdEkstrakurikuler() {
@@ -63,5 +77,17 @@ public class Pembina {
 
     public void setNamaEkstrakurikuler(String namaEkstrakurikuler) {
         this.namaEkstrakurikuler = namaEkstrakurikuler;
+    }
+
+    /**
+     * Metode toString() untuk representasi string dari objek Pembina,
+     * sangat berguna untuk menampilkan di ComboBox atau debug.
+     */
+    @Override
+    public String toString() {
+        if (namaGuru != null && namaEkstrakurikuler != null) {
+            return "Pembina: " + namaGuru + " (Ekskul: " + namaEkstrakurikuler + ")";
+        }
+        return "ID Pembina: " + idPembina + ", NIP Guru: " + nipGuru + ", ID Ekskul: " + idEkstrakurikuler;
     }
 }

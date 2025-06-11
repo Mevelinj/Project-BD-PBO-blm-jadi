@@ -4,7 +4,7 @@ public class TahunAjaran {
     private int idTahunAjaran;
     private int tahunMulai;
     private int tahunSelesai;
-    private String tahunGanjilGenap;
+    private String tahunGanjilGenap; // Contoh: 'Ganjil', 'Genap'
 
     public TahunAjaran(int idTahunAjaran, int tahunMulai, int tahunSelesai, String tahunGanjilGenap) {
         this.idTahunAjaran = idTahunAjaran;
@@ -46,8 +46,25 @@ public class TahunAjaran {
         this.tahunGanjilGenap = tahunGanjilGenap;
     }
 
+    public String getTahunLengkap() {
+        return tahunMulai + "/" + tahunSelesai;
+    }
+
     @Override
     public String toString() {
-        return tahunMulai + "/" + tahunSelesai + " - " + tahunGanjilGenap;
+        return tahunMulai + "/" + tahunSelesai + " - " + tahunGanjilGenap; // Penting untuk ComboBox
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        TahunAjaran that = (TahunAjaran) obj;
+        return idTahunAjaran == that.idTahunAjaran;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idTahunAjaran);
     }
 }

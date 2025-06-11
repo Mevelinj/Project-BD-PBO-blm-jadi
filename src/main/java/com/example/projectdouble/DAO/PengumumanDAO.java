@@ -4,6 +4,7 @@ import com.example.projectdouble.model.Pengumuman;
 import com.example.projectdouble.util.DBConnect;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,13 @@ public class PengumumanDAO {
      * @return true jika berhasil, false jika gagal.
      */
     public boolean addPengumuman(Pengumuman pengumuman) {
-        String sql = "INSERT INTO pengumuman (judul, deskripsi, tanggal, lampiran) VALUES (?, ?, ?, ?)";
+        // Menggunakan nama tabel lowercase 'pengumuman'
+        String sql = "INSERT INTO pengumuman (judul, deskripsi, tanggal, lampiran) VALUES (?, ?, ?, ?) RETURNING id_pengumuman";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, pengumuman.getJudul());
             stmt.setString(2, pengumuman.getDeskripsi());
-            stmt.setDate(3, Date.valueOf(pengumuman.getTanggal()));
+            stmt.setTimestamp(3, Timestamp.valueOf(pengumuman.getTanggal())); // Konversi LocalDateTime ke Timestamp
             stmt.setString(4, pengumuman.getLampiran());
             int rowsAffected = stmt.executeUpdate();
 
@@ -40,53 +42,12 @@ public class PengumumanDAO {
     }
 
     /**
-     * Memperbarui data pengumuman di database.
-     * @param pengumuman Objek Pengumuman dengan data yang diperbarui.
-     * @return true jika berhasil, false jika gagal.
-     */
-    public boolean updatePengumuman(Pengumuman pengumuman) {
-        String sql = "UPDATE pengumuman SET judul = ?, deskripsi = ?, tanggal = ?, lampiran = ? WHERE id_pengumuman = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, pengumuman.getJudul());
-            stmt.setString(2, pengumuman.getDeskripsi());
-            stmt.setDate(3, Date.valueOf(pengumuman.getTanggal()));
-            stmt.setString(4, pengumuman.getLampiran());
-            stmt.setInt(5, pengumuman.getIdPengumuman());
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error saat memperbarui pengumuman: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Menghapus pengumuman dari database.
-     * @param idPengumuman ID pengumuman yang akan dihapus.
-     * @return true jika berhasil, false jika gagal.
-     */
-    public boolean deletePengumuman(int idPengumuman) {
-        String sql = "DELETE FROM pengumuman WHERE id_pengumuman = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idPengumuman);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error saat menghapus pengumuman: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Mengambil semua data pengumuman dari database.
+     * Mengambil semua pengumuman dari database.
      * @return List objek Pengumuman.
      */
     public List<Pengumuman> getAllPengumuman() {
         List<Pengumuman> pengumumanList = new ArrayList<>();
+        // Menggunakan nama tabel lowercase 'pengumuman'
         String sql = "SELECT id_pengumuman, judul, deskripsi, tanggal, lampiran FROM pengumuman ORDER BY tanggal DESC";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -96,7 +57,7 @@ public class PengumumanDAO {
                         rs.getInt("id_pengumuman"),
                         rs.getString("judul"),
                         rs.getString("deskripsi"),
-                        rs.getDate("tanggal").toLocalDate(),
+                        rs.getTimestamp("tanggal").toLocalDateTime(), // Konversi Timestamp ke LocalDateTime
                         rs.getString("lampiran")
                 ));
             }
@@ -113,6 +74,7 @@ public class PengumumanDAO {
      * @return Objek Pengumuman jika ditemukan, null jika tidak.
      */
     public Pengumuman getPengumumanById(int idPengumuman) {
+        // Menggunakan nama tabel lowercase 'pengumuman'
         String sql = "SELECT id_pengumuman, judul, deskripsi, tanggal, lampiran FROM pengumuman WHERE id_pengumuman = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -123,7 +85,7 @@ public class PengumumanDAO {
                         rs.getInt("id_pengumuman"),
                         rs.getString("judul"),
                         rs.getString("deskripsi"),
-                        rs.getDate("tanggal").toLocalDate(),
+                        rs.getTimestamp("tanggal").toLocalDateTime(), // Konversi Timestamp ke LocalDateTime
                         rs.getString("lampiran")
                 );
             }
@@ -132,5 +94,49 @@ public class PengumumanDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Memperbarui data pengumuman di database.
+     * @param pengumuman Objek Pengumuman dengan data terbaru.
+     * @return true jika berhasil, false jika gagal.
+     */
+    public boolean updatePengumuman(Pengumuman pengumuman) {
+        // Menggunakan nama tabel lowercase 'pengumuman'
+        String sql = "UPDATE pengumuman SET judul = ?, deskripsi = ?, tanggal = ?, lampiran = ? WHERE id_pengumuman = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, pengumuman.getJudul());
+            stmt.setString(2, pengumuman.getDeskripsi());
+            stmt.setTimestamp(3, Timestamp.valueOf(pengumuman.getTanggal()));
+            stmt.setString(4, pengumuman.getLampiran());
+            stmt.setInt(5, pengumuman.getIdPengumuman());
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error saat memperbarui pengumuman: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Menghapus pengumuman dari database berdasarkan ID.
+     * @param idPengumuman ID pengumuman yang akan dihapus.
+     * @return true jika berhasil, false jika gagal.
+     */
+    public boolean deletePengumuman(int idPengumuman) {
+        // Menggunakan nama tabel lowercase 'pengumuman'
+        String sql = "DELETE FROM pengumuman WHERE id_pengumuman = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idPengumuman);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error saat menghapus pengumuman: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }
