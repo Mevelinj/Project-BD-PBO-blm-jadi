@@ -38,6 +38,19 @@ public class MataPelajaran {
 
     @Override
     public String toString() {
-        return namaMapel + " (" + jenjangKelas + ")";
+        return namaMapel + " (" + jenjangKelas + ")"; // Penting untuk ComboBox Mata Pelajaran
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MataPelajaran that = (MataPelajaran) obj;
+        return idMapel == that.idMapel;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idMapel);
     }
 }

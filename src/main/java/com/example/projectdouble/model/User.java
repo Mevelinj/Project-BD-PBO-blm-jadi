@@ -3,63 +3,58 @@ package com.example.projectdouble.model;
 public class User {
     private int idUser;
     private String username;
-    private String password; // Seharusnya di-hash di aplikasi nyata, tapi untuk PBO ini bisa langsung
-    private int idRole; // Kunci asing ke Role
-    private String namaRole; // Untuk memudahkan tampilan
+    private String password; // Perhatian: untuk produksi, simpan hash password, bukan plainteks
+    private Role role; // Objek Role untuk menyimpan id_role dan nama_role
 
-    public User(int idUser, String username, String password, int idRole) {
+    public User(int idUser, String username, String password, Role role) {
         this.idUser = idUser;
         this.username = username;
         this.password = password;
-        this.idRole = idRole;
+        this.role = role;
     }
 
-    public User(int idUser, String username, String password, int idRole, String namaRole) {
-        this.idUser = idUser;
+    // Konstruktor tanpa idUser (untuk saat membuat user baru sebelum id dihasilkan database)
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.idRole = idRole;
-        this.namaRole = namaRole;
     }
 
-    // Getters and Setters
+    // Getters
     public int getIdUser() {
         return idUser;
-    }
-
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    // Setters
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public int getIdRole() {
-        return idRole;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public void setIdRole(int idRole) {
-        this.idRole = idRole;
-    }
-
-    public String getNamaRole() {
-        return namaRole;
-    }
-
-    public void setNamaRole(String namaRole) {
-        this.namaRole = namaRole;
+    @Override
+    public String toString() {
+        return username; // Digunakan misalnya jika objek User ditampilkan di ComboBox
     }
 }

@@ -1,37 +1,95 @@
 package com.example.projectdouble.model;
 
+import com.example.projectdouble.DAO.UserDAO;
+
 import java.time.LocalDate;
 
 public class Siswa {
     private String nis;
-    private int idUser;
+    private Integer idUser; // Gunakan Integer agar bisa null
     private String nama;
     private String jenisKelamin;
     private String tempatLahir;
     private LocalDate tanggalLahir; // Menggunakan LocalDate untuk tanggal
     private String alamat;
-    private String username; // Untuk memudahkan data terkait user
+    private String usernameUser; // Untuk memudahkan data terkait user
+    private String passwordUser; // Untuk memudahkan data terkait user (meskipun tidak di-masking)
 
-    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, int idUser) {
+    // Foreign Keys untuk Kelas dan Tahun Ajaran
+    private Integer idKelas; // Bisa null jika belum di-assign ke kelas
+    private String namaKelas; // Untuk tampilan
+    private Integer idTahunAjaran; // Bisa null jika belum di-assign ke kelas
+    private String tahunAjaranLengkap; // Untuk tampilan (misal: "2023/2024 Ganjil")
+    private String semester; // Bisa null jika belum di-assign ke kelas
+
+
+    // Konstruktor untuk data siswa dasar (saat input awal)
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat) {
         this.nis = nis;
-        this.idUser = idUser;
         this.nama = nama;
         this.jenisKelamin = jenisKelamin;
         this.tempatLahir = tempatLahir;
         this.tanggalLahir = tanggalLahir;
         this.alamat = alamat;
+        this.idUser = null; // Default null saat pembuatan awal
+        this.usernameUser = null;
+        this.passwordUser = null;
+        this.idKelas = null;
+        this.namaKelas = null;
+        this.idTahunAjaran = null;
+        this.tahunAjaranLengkap = null;
+        this.semester = null;
     }
 
-    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, int idUser, String username) {
+    // Konstruktor lengkap dengan semua field, termasuk FK dan user info
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat,
+                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap, String semester,
+                 Integer idUser, String usernameUser, String passwordUser) {
         this.nis = nis;
-        this.idUser = idUser;
         this.nama = nama;
         this.jenisKelamin = jenisKelamin;
         this.tempatLahir = tempatLahir;
         this.tanggalLahir = tanggalLahir;
         this.alamat = alamat;
-        this.username = username;
+        this.idKelas = idKelas;
+        this.namaKelas = namaKelas;
+        this.idTahunAjaran = idTahunAjaran;
+        this.tahunAjaranLengkap = tahunAjaranLengkap;
+        this.semester = semester;
+        this.idUser = idUser;
+        this.usernameUser = usernameUser;
+        this.passwordUser = passwordUser;
     }
+
+    // Konstruktor untuk DAO yang hanya mengambil sebagian data
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat, Integer idUser, String usernameUser, String passwordUser) {
+        this.nis = nis;
+        this.nama = nama;
+        this.jenisKelamin = jenisKelamin;
+        this.tempatLahir = tempatLahir;
+        this.tanggalLahir = tanggalLahir;
+        this.alamat = alamat;
+        this.idUser = idUser;
+        this.usernameUser = usernameUser;
+        this.passwordUser = passwordUser;
+    }
+
+    // Konstruktor untuk DAO yang hanya mengambil data SISWA dan KELAS
+    public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat,
+                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap, String semester) {
+        this.nis = nis;
+        this.nama = nama;
+        this.jenisKelamin = jenisKelamin;
+        this.tempatLahir = tempatLahir;
+        this.tanggalLahir = tanggalLahir;
+        this.alamat = alamat;
+        this.idKelas = idKelas;
+        this.namaKelas = namaKelas;
+        this.idTahunAjaran = idTahunAjaran;
+        this.tahunAjaranLengkap = tahunAjaranLengkap;
+        this.semester = semester;
+    }
+
 
     // Getters and Setters
     public String getNis() {
@@ -42,11 +100,11 @@ public class Siswa {
         this.nis = nis;
     }
 
-    public int getIdUser() {
+    public Integer getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
 
@@ -90,11 +148,64 @@ public class Siswa {
         this.alamat = alamat;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUsernameUser() {
+        return usernameUser;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsernameUser(String usernameUser) {
+        this.usernameUser = usernameUser;
+    }
+
+    public String getPasswordUser() {
+        return passwordUser;
+    }
+
+    public void setPasswordUser(String passwordUser) {
+        this.passwordUser = passwordUser;
+    }
+
+    public Integer getIdKelas() {
+        return idKelas;
+    }
+
+    public void setIdKelas(Integer idKelas) {
+        this.idKelas = idKelas;
+    }
+
+    public String getNamaKelas() {
+        return namaKelas;
+    }
+
+    public void setNamaKelas(String namaKelas) {
+        this.namaKelas = namaKelas;
+    }
+
+    public Integer getIdTahunAjaran() {
+        return idTahunAjaran;
+    }
+
+    public void setIdTahunAjaran(Integer idTahunAjaran) {
+        this.idTahunAjaran = idTahunAjaran;
+    }
+
+    public String getTahunAjaranLengkap() {
+        return tahunAjaranLengkap;
+    }
+
+    public void setTahunAjaranLengkap(String tahunAjaranLengkap) {
+        this.tahunAjaranLengkap = tahunAjaranLengkap;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    @Override
+    public String toString() {
+        return nama + " (" + nis + ")"; // Penting untuk ComboBox Siswa
     }
 }

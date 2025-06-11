@@ -1,31 +1,37 @@
 package com.example.projectdouble.model;
 
+import com.example.projectdouble.DAO.UserDAO;
+
 public class Guru {
     private String nip;
-    private int idUser;
+    private Integer idUser; // Gunakan Integer agar bisa null
     private String nama;
     private String jenisKelamin;
     private String email;
     private String noHp;
-    private String username; // Untuk memudahkan data terkait user
+    private String usernameUser; // Untuk memudahkan data terkait user
+    private String passwordUser; // Untuk memudahkan data terkait user (meskipun tidak di-masking)
 
-    public Guru(String nip, String nama, String jenisKelamin, String email, String noHp, int idUser) {
+    public Guru(String nip, String nama, String jenisKelamin, String email, String noHp) {
         this.nip = nip;
-        this.idUser = idUser;
         this.nama = nama;
         this.jenisKelamin = jenisKelamin;
         this.email = email;
         this.noHp = noHp;
+        this.idUser = null;
+        this.usernameUser = null;
+        this.passwordUser = null;
     }
 
-    public Guru(String nip, String nama, String jenisKelamin, String email, String noHp, int idUser,  String username) {
+    public Guru(String nip, Integer idUser, String nama, String jenisKelamin, String email, String noHp, String usernameUser, String passwordUser) {
         this.nip = nip;
         this.idUser = idUser;
         this.nama = nama;
         this.jenisKelamin = jenisKelamin;
         this.email = email;
         this.noHp = noHp;
-        this.username = username;
+        this.usernameUser = usernameUser;
+        this.passwordUser = passwordUser;
     }
 
     // Getters and Setters
@@ -37,11 +43,11 @@ public class Guru {
         this.nip = nip;
     }
 
-    public int getIdUser() {
+    public Integer getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
 
@@ -77,12 +83,20 @@ public class Guru {
         this.noHp = noHp;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUsernameUser() {
+        return usernameUser;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsernameUser(String usernameUser) {
+        this.usernameUser = usernameUser;
+    }
+
+    public String getPasswordUser() {
+        return passwordUser;
+    }
+
+    public void setPasswordUser(String passwordUser) {
+        this.passwordUser = passwordUser;
     }
 
     @Override

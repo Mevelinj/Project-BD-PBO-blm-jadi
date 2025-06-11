@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TahunAjaranDAO {
+
     /**
      * Menambahkan tahun ajaran baru ke database.
      * @param tahunAjaran Objek TahunAjaran yang akan ditambahkan.
      * @return true jika berhasil, false jika gagal.
      */
     public boolean addTahunAjaran(TahunAjaran tahunAjaran) {
-        String sql = "INSERT INTO tahun_ajaran (tahun_mulai, tahun_selesai, tahun_ganjil_genap) VALUES (?, ?, ?)";
+        // Menggunakan nama tabel lowercase 'tahun_ajaran'
+        String sql = "INSERT INTO tahun_ajaran (tahun_mulai, tahun_selesai, tahun_ganjil_genap) VALUES (?, ?, ?) RETURNING id_tahun_ajaran";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, tahunAjaran.getTahunMulai());
@@ -39,52 +41,12 @@ public class TahunAjaranDAO {
     }
 
     /**
-     * Memperbarui data tahun ajaran di database.
-     * @param tahunAjaran Objek TahunAjaran dengan data yang diperbarui.
-     * @return true jika berhasil, false jika gagal.
-     */
-    public boolean updateTahunAjaran(TahunAjaran tahunAjaran) {
-        String sql = "UPDATE tahun_ajaran SET tahun_mulai = ?, tahun_selesai = ?, tahun_ganjil_genap = ? WHERE id_tahun_ajaran = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, tahunAjaran.getTahunMulai());
-            stmt.setInt(2, tahunAjaran.getTahunSelesai());
-            stmt.setString(3, tahunAjaran.getTahunGanjilGenap());
-            stmt.setInt(4, tahunAjaran.getIdTahunAjaran());
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error saat memperbarui tahun ajaran: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Menghapus tahun ajaran dari database.
-     * @param idTahunAjaran ID tahun ajaran yang akan dihapus.
-     * @return true jika berhasil, false jika gagal.
-     */
-    public boolean deleteTahunAjaran(int idTahunAjaran) {
-        String sql = "DELETE FROM tahun_ajaran WHERE id_tahun_ajaran = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idTahunAjaran);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Error saat menghapus tahun ajaran: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Mengambil semua data tahun ajaran dari database.
+     * Mengambil semua tahun ajaran dari database.
      * @return List objek TahunAjaran.
      */
     public List<TahunAjaran> getAllTahunAjaran() {
         List<TahunAjaran> tahunAjaranList = new ArrayList<>();
+        // Menggunakan nama tabel lowercase 'tahun_ajaran'
         String sql = "SELECT id_tahun_ajaran, tahun_mulai, tahun_selesai, tahun_ganjil_genap FROM tahun_ajaran ORDER BY tahun_mulai DESC, tahun_ganjil_genap DESC";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -105,11 +67,12 @@ public class TahunAjaranDAO {
     }
 
     /**
-     * Mengambil data tahun ajaran berdasarkan ID.
-     * @param idTahunAjaran ID tahun ajaran yang dicari.
+     * Mengambil tahun ajaran berdasarkan ID.
+     * @param idTahunAjaran ID tahun ajaran.
      * @return Objek TahunAjaran jika ditemukan, null jika tidak.
      */
     public TahunAjaran getTahunAjaranById(int idTahunAjaran) {
+        // Menggunakan nama tabel lowercase 'tahun_ajaran'
         String sql = "SELECT id_tahun_ajaran, tahun_mulai, tahun_selesai, tahun_ganjil_genap FROM tahun_ajaran WHERE id_tahun_ajaran = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -130,4 +93,46 @@ public class TahunAjaranDAO {
         return null;
     }
 
+    /**
+     * Memperbarui data tahun ajaran di database.
+     * @param tahunAjaran Objek TahunAjaran dengan data terbaru.
+     * @return true jika berhasil, false jika gagal.
+     */
+    public boolean updateTahunAjaran(TahunAjaran tahunAjaran) {
+        // Menggunakan nama tabel lowercase 'tahun_ajaran'
+        String sql = "UPDATE tahun_ajaran SET tahun_mulai = ?, tahun_selesai = ?, tahun_ganjil_genap = ? WHERE id_tahun_ajaran = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, tahunAjaran.getTahunMulai());
+            stmt.setInt(2, tahunAjaran.getTahunSelesai());
+            stmt.setString(3, tahunAjaran.getTahunGanjilGenap());
+            stmt.setInt(4, tahunAjaran.getIdTahunAjaran());
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error saat memperbarui tahun ajaran: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Menghapus tahun ajaran dari database berdasarkan ID.
+     * @param idTahunAjaran ID tahun ajaran yang akan dihapus.
+     * @return true jika berhasil, false jika gagal.
+     */
+    public boolean deleteTahunAjaran(int idTahunAjaran) {
+        // Menggunakan nama tabel lowercase 'tahun_ajaran'
+        String sql = "DELETE FROM tahun_ajaran WHERE id_tahun_ajaran = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idTahunAjaran);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error saat menghapus tahun ajaran: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

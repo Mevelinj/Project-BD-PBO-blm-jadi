@@ -7,7 +7,9 @@ public class PesertaEkskul {
 
     // Untuk memudahkan tampilan
     private String namaSiswa;
-    private String namaEkstrakurikuler;
+    private String namaEkstrakurikuler; // Ini sudah ada di model awal, tapi saya tambahkan ulang untuk memastikan
+    private String namaKelasSiswa; // Nama kelas siswa
+    private String tahunAjaranSiswa; // Tahun ajaran lengkap siswa (ex: 2023/2024 - Ganjil)
 
     public PesertaEkskul(int idPeserta, String nis, int idEkstrakurikuler) {
         this.idPeserta = idPeserta;
@@ -15,13 +17,15 @@ public class PesertaEkskul {
         this.idEkstrakurikuler = idEkstrakurikuler;
     }
 
-    // Constructor dengan nama-nama terkait
-    public PesertaEkskul(int idPeserta, String nis, String namaSiswa, int idEkstrakurikuler, String namaEkstrakurikuler) {
+    // Constructor dengan nama-nama terkait (untuk memuat data ke tabel)
+    public PesertaEkskul(int idPeserta, String nis, String namaSiswa, int idEkstrakurikuler, String namaEkstrakurikuler, String namaKelasSiswa, String tahunAjaranSiswa) {
         this.idPeserta = idPeserta;
         this.nis = nis;
         this.namaSiswa = namaSiswa;
         this.idEkstrakurikuler = idEkstrakurikuler;
         this.namaEkstrakurikuler = namaEkstrakurikuler;
+        this.namaKelasSiswa = namaKelasSiswa;
+        this.tahunAjaranSiswa = tahunAjaranSiswa;
     }
 
     // Getters and Setters
@@ -63,5 +67,21 @@ public class PesertaEkskul {
 
     public void setNamaEkstrakurikuler(String namaEkstrakurikuler) {
         this.namaEkstrakurikuler = namaEkstrakurikuler;
+    }
+
+    public String getNamaKelasSiswa() {
+        return namaKelasSiswa;
+    }
+
+    public void setNamaKelasSiswa(String namaKelasSiswa) {
+        this.namaKelasSiswa = namaKelasSiswa;
+    }
+
+    public String getTahunAjaranSiswa() {
+        return tahunAjaranSiswa;
+    }
+
+    public void setTahunAjaranSiswa(String tahunAjaranSiswa) {
+        this.tahunAjaranSiswa = tahunAjaranSiswa;
     }
 }

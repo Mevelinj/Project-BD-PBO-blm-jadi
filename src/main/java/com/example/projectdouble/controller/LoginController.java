@@ -81,12 +81,12 @@ public class LoginController implements Initializable {
 
             // Set nama asli untuk welcome message (jika ada)
             String welcomeName = loggedInUser.getUsername();
-            if ("guru".equals(loggedInUser.getNamaRole())) {
+            if ("guru".equals(loggedInUser.getRole().getNamaRole())) {
                 String guruName = userDao.getGuruNameByNip(loggedInUser.getUsername());
                 if (guruName != null) {
                     welcomeName = guruName;
                 }
-            } else if ("siswa".equals(loggedInUser.getNamaRole())) {
+            } else if ("siswa".equals(loggedInUser.getRole().getNamaRole())) {
                 String siswaName = userDao.getSiswaNameByNis(loggedInUser.getUsername());
                 if (siswaName != null) {
                     welcomeName = siswaName;
@@ -104,7 +104,7 @@ public class LoginController implements Initializable {
                 String fxmlPath;
                 String dashboardTitle;
 
-                switch (loggedInUser.getNamaRole()) {
+                switch (loggedInUser.getRole().getNamaRole()) {
                     case "admin":
                         fxmlPath = "/com/example/projectdouble/admin-dashboard.fxml";
                         dashboardTitle = "Dashboard Admin";

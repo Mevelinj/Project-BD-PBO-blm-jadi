@@ -1,15 +1,15 @@
 package com.example.projectdouble.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Pengumuman {
     private int idPengumuman;
     private String judul;
     private String deskripsi;
-    private LocalDate tanggal;
+    private LocalDateTime tanggal; // Menggunakan LocalDateTime
     private String lampiran;
 
-    public Pengumuman(int idPengumuman, String judul, String deskripsi, LocalDate tanggal, String lampiran) {
+    public Pengumuman(int idPengumuman, String judul, String deskripsi, LocalDateTime tanggal, String lampiran) {
         this.idPengumuman = idPengumuman;
         this.judul = judul;
         this.deskripsi = deskripsi;
@@ -42,11 +42,11 @@ public class Pengumuman {
         this.deskripsi = deskripsi;
     }
 
-    public LocalDate getTanggal() {
+    public LocalDateTime getTanggal() { // Mengembalikan LocalDateTime
         return tanggal;
     }
 
-    public void setTanggal(LocalDate tanggal) {
+    public void setTanggal(LocalDateTime tanggal) { // Menerima LocalDateTime
         this.tanggal = tanggal;
     }
 
