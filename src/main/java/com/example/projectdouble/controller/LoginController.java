@@ -86,13 +86,14 @@ public class LoginController implements Initializable {
                 if (guruName != null) {
                     welcomeName = guruName;
                 }
+
             } else if ("siswa".equals(loggedInUser.getRole().getNamaRole())) {
                 String siswaName = userDao.getSiswaNameByNis(loggedInUser.getUsername());
                 if (siswaName != null) {
                     welcomeName = siswaName;
                 }
             }
-            loggedInUser.setUsername(welcomeName); // Set username di objek User menjadi nama asli
+            loggedInUser.setDisplayName(welcomeName); // Set username di objek User menjadi nama asli
 
             SessionManager.setLoggedInUser(loggedInUser); // Simpan user yang login di SessionManager
 
@@ -126,8 +127,9 @@ public class LoginController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
                 Parent root = loader.load();
 
-                
-
+                if (selectedRole.equals("guru")){
+                    GuruController guruController=loader.getController();
+                }
                 // Membuat Scene baru dan menetapkannya ke Stage
                 Scene scene = new Scene(root);
                 stage.setScene(scene);

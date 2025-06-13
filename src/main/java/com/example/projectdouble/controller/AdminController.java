@@ -412,7 +412,7 @@ public class AdminController implements Initializable {
         // Set welcome message
         User loggedInUser = SessionManager.getLoggedInUser();
         if (loggedInUser != null) {
-            welcome.setText("Welcome, " + loggedInUser.getUsername() + "!");
+            welcome.setText("Welcome, " + loggedInUser.getDisplayName() + "!");
         } else {
             welcome.setText("Welcome, Guest!");
         }

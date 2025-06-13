@@ -23,9 +23,9 @@
             <Font name="System Bold Italic" size="30.0" />
          </font>
       </Label>
-      <Button fx:id="logout" layoutX="877.0" layoutY="10.0" mnemonicParsing="false" text="Logout" />
-      <TabPane layoutX="12.0" layoutY="82.0" prefHeight="503.0" prefWidth="922.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
+      <Button fx:id="logout" layoutX="877.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleLogoutButtonAction" text="Logout" />
+      <TabPane fx:id="mainTabPane" layoutX="12.0" layoutY="82.0" prefHeight="503.0" prefWidth="922.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
             <Tab text="Announcements">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="919.0">
@@ -35,12 +35,12 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Label>
-                        <TableView layoutX="13.0" layoutY="51.0" prefHeight="411.0" prefWidth="894.0">
+                        <TableView fx:id="announcementTable" layoutX="13.0" layoutY="51.0" prefHeight="411.0" prefWidth="894.0">
                            <columns>
-                              <TableColumn prefWidth="137.33330726623535" text="TITLE" />
-                              <TableColumn prefWidth="126.00001525878906" text="DATE/TIME" />
-                              <TableColumn prefWidth="511.9999694824219" text="CONTENT" />
-                              <TableColumn prefWidth="117.33331298828125" text="ATTACHMENT" />
+                              <TableColumn fx:id="announcementTitleCol" prefWidth="137.33330726623535" text="TITLE" />
+                              <TableColumn fx:id="announcementDateCol" prefWidth="126.00001525878906" text="DATE/TIME" />
+                              <TableColumn fx:id="announcementContentCol" prefWidth="511.9999694824219" text="CONTENT" />
+                              <TableColumn fx:id="announcementAttachmentCol" prefWidth="117.33331298828125" text="ATTACHMENT" />
                            </columns>
                         </TableView>
                      </children>
@@ -70,13 +70,13 @@
                               <Label text="GENDER" GridPane.rowIndex="2" />
                               <Label text="PLACE OF BIRTH" GridPane.rowIndex="3" />
                               <Label text="DATE OF BIRTH" GridPane.rowIndex="4" />
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ComboBox prefHeight="25.0" prefWidth="264.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="biodataNisField" editable="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="biodataNameField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="biodataPobField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="biodataDobField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <ComboBox fx:id="biodataGenderCombo" disable="true" prefHeight="25.0" prefWidth="264.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label layoutX="10.0" layoutY="159.0" text="ADDRESS" GridPane.rowIndex="5" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <TextArea fx:id="biodataAddressArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                            </children>
                         </GridPane>
                         <Label layoutX="14.0" layoutY="14.0" text="MY BIODATA">
@@ -109,43 +109,43 @@
                               <Label text="GENDER" GridPane.rowIndex="2" />
                               <Label text="PLACE OF BIRTH" GridPane.rowIndex="3" />
                               <Label text="DATE OF BIRTH" GridPane.rowIndex="4" />
-                              <TextField GridPane.columnIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ComboBox prefHeight="25.0" prefWidth="264.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="editNisField" editable="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="editNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="editPobField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="editDobField" promptText="dd/mm/yyyy" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <ComboBox fx:id="editGenderCombo" prefHeight="25.0" prefWidth="264.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label layoutX="10.0" layoutY="159.0" text="ADDRESS" GridPane.rowIndex="5" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Button mnemonicParsing="false" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextArea fx:id="editAddressArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Button fx:id="updateBiodataButton" mnemonicParsing="false" onAction="#handleUpdateBiodataButtonAction" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
-          <Tab text="Assignments">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <Tab text="Assignments">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Label layoutX="29.0" layoutY="14.0" text="Subject: ">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <ComboBox layoutX="124.0" layoutY="17.0" prefWidth="150.0" />
-                        <TableView layoutX="29.0" layoutY="63.0" prefHeight="378.0" prefWidth="866.0">
-                          <columns>
-                            <TableColumn prefWidth="254.00003051757812" text="TITLE " />
-                            <TableColumn prefWidth="316.6666259765625" text="DESCRIPTION" />
-                              <TableColumn prefWidth="296.0" text="DEADLINE" />
-                          </columns>
+                        <ComboBox fx:id="assignmentSubjectCombo" layoutX="124.0" layoutY="17.0" prefWidth="150.0" />
+                        <TableView fx:id="assignmentTable" layoutX="29.0" layoutY="63.0" prefHeight="378.0" prefWidth="866.0">
+                           <columns>
+                              <TableColumn fx:id="assignmentTitleCol" prefWidth="254.00003051757812" text="TITLE " />
+                              <TableColumn fx:id="assignmentDescCol" prefWidth="316.6666259765625" text="DESCRIPTION" />
+                              <TableColumn fx:id="assignmentDeadlineCol" prefWidth="296.0" text="DEADLINE" />
+                           </columns>
                         </TableView>
                      </children></AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Extracurricular">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               </content>
+            </Tab>
+            <Tab text="Extracurricular">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <GridPane layoutX="14.0" layoutY="27.0" prefHeight="97.0" prefWidth="337.0">
                            <columnConstraints>
@@ -155,28 +155,26 @@
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="SCHOOL YEAR" />
-                              <ComboBox prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" />
-                              <ComboBox prefHeight="25.0" prefWidth="264.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="extracurricularSchoolYearCombo" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="extracurricularSemesterCombo" prefHeight="25.0" prefWidth="264.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
-                        <TableView layoutX="404.0" layoutY="27.0" prefHeight="422.0" prefWidth="495.0">
+                        <TableView fx:id="extracurricularTable" layoutX="404.0" layoutY="27.0" prefHeight="422.0" prefWidth="495.0">
                            <columns>
-                              <TableColumn prefWidth="183.3333740234375" text="EXTRACURRICULAR" />
-                              <TableColumn prefWidth="147.33331298828125" text="LEVEL" />
-                              <TableColumn prefWidth="163.3333740234375" text="MENTOR" />
+                              <TableColumn fx:id="extracurricularNameCol" prefWidth="183.3333740234375" text="EXTRACURRICULAR" />
+                              <TableColumn fx:id="extracurricularLevelCol" prefWidth="147.33331298828125" text="LEVEL" />
+                              <TableColumn fx:id="extracurricularMentorCol" prefWidth="163.3333740234375" text="MENTOR" />
                            </columns>
                         </TableView>
                      </children></AnchorPane>
-            </content>
-          </Tab>
+               </content>
+            </Tab>
             <Tab text="School Agenda">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Label layoutX="398.0" layoutY="14.0" text="SCHOOL AGENDA">
                            <font>
@@ -194,30 +192,30 @@
                            </rowConstraints>
                            <children>
                               <Label text="SCHOOL YEAR" />
-                              <ComboBox prefHeight="25.0" prefWidth="312.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <ComboBox prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="agendaSemesterCombo" prefHeight="25.0" prefWidth="312.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="agendaSchoolYearCombo" prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
-                        <TableView layoutX="17.0" layoutY="108.0" prefHeight="356.0" prefWidth="888.0">
+                        <TableView fx:id="agendaTable" layoutX="17.0" layoutY="108.0" prefHeight="356.0" prefWidth="888.0">
                            <columns>
-                              <TableColumn prefWidth="575.3333530426025" text="CONTENT" />
-                              <TableColumn prefWidth="153.33331298828125" text="START" />
-                              <TableColumn prefWidth="138.66668701171875" text="END" />
+                              <TableColumn fx:id="agendaContentCol" prefWidth="575.3333530426025" text="CONTENT" />
+                              <TableColumn fx:id="agendaStartCol" prefWidth="153.33331298828125" text="START" />
+                              <TableColumn fx:id="agendaEndCol" prefWidth="138.66668701171875" text="END" />
                            </columns>
                         </TableView>
                      </children></AnchorPane>
-              </content>
+               </content>
             </Tab>
             <Tab text="Schedule">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="27.0" layoutY="74.0" prefHeight="386.0" prefWidth="867.0">
+                        <TableView fx:id="scheduleTable" layoutX="27.0" layoutY="74.0" prefHeight="386.0" prefWidth="867.0">
                            <columns>
-                              <TableColumn prefWidth="230.66666793823242" text="DAY" />
-                              <TableColumn prefWidth="193.33334350585938" text="START" />
-                              <TableColumn prefWidth="173.33334350585938" text="END" />
-                              <TableColumn prefWidth="269.33331298828125" text="SUBJECT" />
+                              <TableColumn fx:id="scheduleDayCol" prefWidth="230.66666793823242" text="DAY" />
+                              <TableColumn fx:id="scheduleStartCol" prefWidth="193.33334350585938" text="START" />
+                              <TableColumn fx:id="scheduleEndCol" prefWidth="173.33334350585938" text="END" />
+                              <TableColumn fx:id="scheduleSubjectCol" prefWidth="269.33331298828125" text="SUBJECT" />
                            </columns>
                         </TableView>
                         <Label layoutX="423.0" layoutY="27.0" text="SCHEDULE">
@@ -227,17 +225,17 @@
                         </Label>
                      </children>
                   </AnchorPane>
-              </content>
+               </content>
             </Tab>
             <Tab text="Grade">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="27.0" layoutY="123.0" prefHeight="322.0" prefWidth="867.0">
+                        <TableView fx:id="gradeTable" layoutX="27.0" layoutY="123.0" prefHeight="322.0" prefWidth="867.0">
                            <columns>
-                              <TableColumn prefWidth="246.6666374206543" text="EXAM " />
-                              <TableColumn prefWidth="317.3333435058594" text="GRADE" />
-                              <TableColumn prefWidth="304.0" text="SEMESTER" />
+                              <TableColumn fx:id="gradeExamCol" prefWidth="246.6666374206543" text="EXAM " />
+                              <TableColumn fx:id="gradeGradeCol" prefWidth="317.3333435058594" text="GRADE" />
+                              <TableColumn fx:id="gradeSemesterCol" prefWidth="304.0" text="SEMESTER" />
                            </columns>
                         </TableView>
                         <Label layoutX="27.0" layoutY="66.0" text="Subject: ">
@@ -245,7 +243,7 @@
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <ComboBox layoutX="118.0" layoutY="69.0" prefWidth="150.0" />
+                        <ComboBox fx:id="gradeSubjectCombo" layoutX="118.0" layoutY="69.0" prefWidth="150.0" />
                         <Label layoutX="435.0" layoutY="27.0" text="GRADE">
                            <font>
                               <Font name="System Bold" size="15.0" />
@@ -255,15 +253,15 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Rapor">
+            <Tab text="Report">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="27.0" layoutY="79.0" prefHeight="368.0" prefWidth="867.0">
+                        <TableView fx:id="reportTable" layoutX="27.0" layoutY="79.0" prefHeight="368.0" prefWidth="867.0">
                            <columns>
-                              <TableColumn prefWidth="246.6666374206543" text="SUBJECT" />
-                              <TableColumn prefWidth="317.3333435058594" text="EXAM" />
-                              <TableColumn prefWidth="301.33333333333337" text="GRADE" />
+                              <TableColumn fx:id="reportSubjectCol" prefWidth="246.6666374206543" text="SUBJECT" />
+                              <TableColumn fx:id="reportExamCol" prefWidth="317.3333435058594" text="EXAM" />
+                              <TableColumn fx:id="reportGradeCol" prefWidth="301.33333333333337" text="GRADE" />
                            </columns>
                         </TableView>
                         <Label layoutX="27.0" layoutY="24.0" text="Semester: ">
@@ -271,8 +269,8 @@
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <ComboBox layoutX="134.0" layoutY="27.0" prefWidth="150.0" />
-                        <TextField layoutX="738.0" layoutY="27.0" />
+                        <ComboBox fx:id="reportSemesterCombo" layoutX="134.0" layoutY="27.0" prefWidth="150.0" />
+                        <TextField fx:id="reportClassField" layoutX="738.0" layoutY="27.0" />
                         <Label layoutX="670.0" layoutY="24.0" text="Class:">
                            <font>
                               <Font size="22.0" />
@@ -282,14 +280,14 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Presensi">
+            <Tab text="Attendance">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView layoutX="45.0" layoutY="88.0" prefHeight="364.0" prefWidth="831.0">
+                        <TableView fx:id="attendanceTable" layoutX="45.0" layoutY="88.0" prefHeight="364.0" prefWidth="831.0">
                            <columns>
-                              <TableColumn prefWidth="369.3333168029785" text="DATE" />
-                              <TableColumn prefWidth="460.6666564941406" text="STATUS" />
+                              <TableColumn fx:id="attendanceDateCol" prefWidth="369.3333168029785" text="DATE" />
+                              <TableColumn fx:id="attendanceStatusCol" prefWidth="460.6666564941406" text="STATUS" />
                            </columns>
                         </TableView>
                         <Label layoutX="62.0" layoutY="29.0" text="Semester: ">
@@ -297,8 +295,8 @@
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <ComboBox layoutX="170.0" layoutY="34.0" prefWidth="150.0" />
-                        <TextField layoutX="692.0" layoutY="30.0" />
+                        <ComboBox fx:id="attendanceSemesterCombo" layoutX="170.0" layoutY="34.0" prefWidth="150.0" />
+                        <TextField fx:id="attendanceClassField" layoutX="692.0" layoutY="30.0" />
                         <Label layoutX="613.0" layoutY="26.0" text="Class:">
                            <font>
                               <Font size="22.0" />
@@ -308,7 +306,7 @@
                   </AnchorPane>
                </content>
             </Tab>
-        </tabs>
+         </tabs>
       </TabPane>
       <HBox layoutX="12.0" layoutY="49.0" prefHeight="30.0" prefWidth="116.0" spacing="2.0">
          <children>
@@ -317,7 +315,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextField prefHeight="25.0" prefWidth="59.0" />
+            <TextField fx:id="classHeaderField" editable="false" prefHeight="25.0" prefWidth="59.0" />
          </children>
       </HBox>
       <HBox layoutX="144.0" layoutY="49.0" prefHeight="30.0" prefWidth="417.0" spacing="2.0">
@@ -327,7 +325,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextField prefHeight="25.0" prefWidth="249.0" />
+            <TextField fx:id="homeroomTeacherHeaderField" editable="false" prefHeight="25.0" prefWidth="249.0" />
          </children>
       </HBox>
       <HBox layoutX="571.0" layoutY="49.0" prefHeight="30.0" prefWidth="317.0" spacing="2.0">
@@ -337,7 +335,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <ComboBox prefHeight="25.0" prefWidth="205.0" />
+            <ComboBox fx:id="schoolYearHeaderCombo" prefHeight="25.0" prefWidth="205.0" />
          </children>
       </HBox>
    </children>

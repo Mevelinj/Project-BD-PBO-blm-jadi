@@ -5,12 +5,14 @@ public class User {
     private String username;
     private String password; // Perhatian: untuk produksi, simpan hash password, bukan plainteks
     private Role role; // Objek Role untuk menyimpan id_role dan nama_role
+    private String displayName;
 
     public User(int idUser, String username, String password, Role role) {
         this.idUser = idUser;
         this.username = username;
         this.password = password;
         this.role = role;
+        this.displayName=username;
     }
 
     // Konstruktor tanpa idUser (untuk saat membuat user baru sebelum id dihasilkan database)
@@ -34,6 +36,14 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     // Setters

@@ -2,6 +2,7 @@ package com.example.projectdouble.controller;
 
 import com.example.projectdouble.DAO.*;
 import com.example.projectdouble.model.*;
+import com.example.projectdouble.util.SessionManager; // Pastikan ini di-import
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,14 +22,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class GuruController implements Initializable {
 
     //<editor-fold desc="DAO Instances and FXML Declarations">
-    // ... (Semua deklarasi FXML dan DAO dari jawaban sebelumnya tetap sama)
+    // ... (Tidak ada perubahan) ...
     private final GuruDAO guruDAO = new GuruDAO();
     private final UserDAO userDAO = new UserDAO();
     private final PengumumanDAO pengumumanDAO = new PengumumanDAO();
@@ -56,9 +56,6 @@ public class GuruController implements Initializable {
     @FXML private TextField editPasswordUsernameField;
     @FXML private TextField editPasswordOldPassField, editPasswordNewPassField;
     @FXML private Button updateBiodataButton, changePasswordButton;
-    @FXML private ChoiceBox<Kelas> scheduleClassChoice;
-    @FXML private ChoiceBox<MataPelajaran> scheduleSubjectChoice;
-    @FXML private Button scheduleRefreshButton;
     @FXML private TableView<JadwalKelas> scheduleTable;
     @FXML private TableColumn<JadwalKelas, String> scheduleDayCol, scheduleStartCol, scheduleEndCol, scheduleSubjectCol, scheduleClassCol;
     @FXML private ComboBox<Kelas> inputScoreClassCombo;
@@ -81,7 +78,7 @@ public class GuruController implements Initializable {
     @FXML private DatePicker assignmentDeadlinePicker;
     @FXML private Button addAssignmentButton;
     @FXML private TableView<Tugas> assignmentTable;
-    @FXML private TableColumn<Tugas, String> assignmentTitleCol, assignmentDescCol, assignmentDeadlineCol, assignmentSubjectCol, assignmentClassCol;
+    @FXML private TableColumn<Tugas, String> assignmentTitleCol, assignmentDescCol, assignmentDeadlineCol;
     @FXML private Tab homeroomTab;
     @FXML private ComboBox<TahunAjaran> homeroomSchoolYearCombo;
     @FXML private TextField homeroomClassField;
@@ -112,24 +109,56 @@ public class GuruController implements Initializable {
 
     private Guru currentTeacher;
 
-    //<editor-fold desc="Initialize, Setup, dan Load Data (Tidak Berubah)">
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // PERBAIKAN: Menggunakan pola SessionManager untuk memuat data secara mandiri
         setupAllUIComponents();
-        loadInitialData();
-    }
-    public void initData(String username) {
-        if (username == null || username.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Login Error", "Username (NIP) tidak diterima dari halaman login.");
-            return;
-        }
-        currentTeacher = guruDAO.getGuruByNip(username);
-        if (currentTeacher != null) {
-            welcome.setText("Welcome, " + currentTeacher.getNama() + "!");
-            loadDataForGuru();
+        loadInitialData(); // Muat data umum terlebih dahulu
+
+        User loggedInUser = SessionManager.getLoggedInUser();
+        if (loggedInUser != null) {
+            // Ambil username (NIP) dari sesi
+            String username = loggedInUser.getUsername();
+
+            // Cari detail guru berdasarkan NIP
+            this.currentTeacher = guruDAO.getGuruByNip(username);
+
+            if (this.currentTeacher != null) {
+                // Set welcome text dengan NAMA LENGKAP guru
+                welcome.setText("Welcome, " + currentTeacher.getNama() + "!");
+                // Muat semua data yang spesifik untuk guru ini
+                loadDataForGuru();
+            } else {
+                // Fallback jika NIP dari sesi tidak ditemukan di tabel guru
+                showAlert(Alert.AlertType.ERROR, "Data Error", "Data detail untuk guru dengan NIP '" + username + "' tidak ditemukan.");
+                welcome.setText("Welcome, " + username + "!");
+            }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Fatal Error", "Gagal memuat data guru dengan NIP: " + username);
+            // Fallback jika tidak ada sesi (seharusnya tidak terjadi jika alur login benar)
+            welcome.setText("Welcome, Guest!");
+            showAlert(Alert.AlertType.WARNING, "Sesi Tidak Ditemukan", "Tidak dapat menemukan data user yang login.");
         }
+    }
+
+    // ... (Sisa kode sama persis dengan jawaban sebelumnya, sudah mencakup semua perbaikan)
+    //<editor-fold defaultstate="collapsed" desc="Sisa Kode (Tidak Berubah)">
+    private void loadDataForGuru() {
+        if (currentTeacher == null) return;
+        biodataNipField.setText(currentTeacher.getNip());
+        biodataNameField.setText(currentTeacher.getNama());
+        biodataGenderCombo.setValue(currentTeacher.getJenisKelamin());
+        biodataEmailField.setText(currentTeacher.getEmail());
+        biodataPhoneField.setText(currentTeacher.getNoHp());
+        editBiodataNipField.setText(currentTeacher.getNip());
+        editBiodataNameField.setText(currentTeacher.getNama());
+        editBiodataGenderCombo.setValue(currentTeacher.getJenisKelamin());
+        editBiodataEmailField.setText(currentTeacher.getEmail());
+        editBiodataPhoneField.setText(currentTeacher.getNoHp());
+        editPasswordUsernameField.setText(currentTeacher.getUsernameUser());
+        editPasswordOldPassField.setDisable(false);
+        editPasswordNewPassField.setDisable(false);
+        scheduleTable.setItems(FXCollections.observableArrayList(jadwalKelasDAO.getAllJadwalKelasDetails().stream().filter(j -> j.getNipGuru().equals(currentTeacher.getNip())).collect(Collectors.toList())));
+        checkAndSetupConditionalTabs();
     }
     private void setupAllUIComponents() {
         setupTableColumns();
@@ -200,6 +229,10 @@ public class GuruController implements Initializable {
             filterMentorStudents();
         });
         mentorLevelSelectCombo.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> filterMentorStudents());
+
+        // Listener untuk validasi input skor secara real-time
+        addNumericOnlyListener(inputScoreField);
+        addNumericOnlyListener(editScoreField);
     }
     private void loadInitialData() {
         announcementsTable.setItems(FXCollections.observableArrayList(pengumumanDAO.getAllPengumuman()));
@@ -217,22 +250,6 @@ public class GuruController implements Initializable {
         agendaSchoolYearCombo.setItems(allSchoolYears);
         homeroomSchoolYearCombo.setItems(allSchoolYears);
         mentorSchoolYearCombo.setItems(allSchoolYears);
-    }
-    private void loadDataForGuru() {
-        if (currentTeacher == null) return;
-        biodataNipField.setText(currentTeacher.getNip());
-        biodataNameField.setText(currentTeacher.getNama());
-        biodataGenderCombo.setValue(currentTeacher.getJenisKelamin());
-        biodataEmailField.setText(currentTeacher.getEmail());
-        biodataPhoneField.setText(currentTeacher.getNoHp());
-        editBiodataNipField.setText(currentTeacher.getNip());
-        editBiodataNameField.setText(currentTeacher.getNama());
-        editBiodataGenderCombo.setValue(currentTeacher.getJenisKelamin());
-        editBiodataEmailField.setText(currentTeacher.getEmail());
-        editBiodataPhoneField.setText(currentTeacher.getNoHp());
-        editPasswordUsernameField.setText(currentTeacher.getUsernameUser());
-        scheduleTable.setItems(FXCollections.observableArrayList(jadwalKelasDAO.getAllJadwalKelasDetails().stream().filter(j -> j.getNipGuru().equals(currentTeacher.getNip())).collect(Collectors.toList())));
-        checkAndSetupConditionalTabs();
     }
     private void checkAndSetupConditionalTabs() {
         Kelas homeroomClass = kelasDAO.getAllKelas().stream().filter(k -> Objects.equals(k.getNipWaliKelas(), currentTeacher.getNip())).findFirst().orElse(null);
@@ -301,44 +318,50 @@ public class GuruController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Action Handlers">
-
-    // MODIFIKASI: Logika logout diubah untuk kembali ke halaman login
-    @FXML
-    void handleLogoutButtonAction(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Apakah Anda yakin ingin logout?", ButtonType.OK, ButtonType.CANCEL);
-        alert.setTitle("Konfirmasi Logout");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                // Asumsi file login Anda bernama login.fxml dan berada di path yang sama
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectdouble/login.fxml"));
-                Parent root = loader.load();
-
-                Stage stage = (Stage) logout.getScene().getWindow();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("Login");
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat halaman login.");
+    private void addNumericOnlyListener(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                textField.setText(newValue.replaceAll("[^\\d.]", ""));
             }
+        });
+    }
+    @FXML void handleLogoutButtonAction(ActionEvent event) {
+        try {
+            SessionManager.clearSession();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectdouble/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logout.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat halaman login.");
         }
     }
-
     @FXML void handleUpdateBiodataButtonAction(ActionEvent event) {
-        Guru updatedGuru = new Guru(currentTeacher.getNip(), currentTeacher.getIdUser(), editBiodataNameField.getText(), editBiodataGenderCombo.getValue(), editBiodataEmailField.getText(), editBiodataPhoneField.getText(), currentTeacher.getUsernameUser(), currentTeacher.getPasswordUser());
+        String nama = editBiodataNameField.getText();
+        String noHp = editBiodataPhoneField.getText();
+        if (nama.isEmpty() || editBiodataGenderCombo.getValue() == null || editBiodataEmailField.getText().isEmpty() || noHp.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Tidak Lengkap", "Semua field pada Edit Biodata harus diisi.");
+            return;
+        }
+        if (!nama.matches("[a-zA-Z\\s']+")) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nama hanya boleh mengandung huruf dan spasi.");
+            return;
+        }
+        if (!noHp.matches("\\d+")) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nomor telepon hanya boleh mengandung angka.");
+            return;
+        }
+        Guru updatedGuru = new Guru(currentTeacher.getNip(), currentTeacher.getIdUser(), nama, editBiodataGenderCombo.getValue(), editBiodataEmailField.getText(), noHp, currentTeacher.getUsernameUser(), currentTeacher.getPasswordUser());
         if (guruDAO.updateGuru(updatedGuru)) {
             showAlert(Alert.AlertType.INFORMATION, "Sukses", "Data biodata berhasil diperbarui.");
             currentTeacher = updatedGuru;
             loadDataForGuru();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui data biodata.");
+            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui data biodata di database.");
         }
     }
     @FXML void handleChangePasswordButtonAction(ActionEvent event) {
@@ -361,15 +384,25 @@ public class GuruController implements Initializable {
         showAlert(Alert.AlertType.WARNING, "Fitur Tidak Tersedia", "Tidak bisa merekam absensi karena tidak ada cara untuk menentukan Jadwal Kelas spesifik dari UI ini. Diperlukan modifikasi pada UI atau Model Presensi.");
     }
     @FXML void handleSubmitScoreButtonAction(ActionEvent event) {
+        String scoreText = inputScoreField.getText();
+        if (scoreText.isEmpty() || !scoreText.matches("\\d*\\.?\\d*")) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka yang valid.");
+            return;
+        }
         try {
             Kelas kelas = inputScoreClassCombo.getValue();
             MataPelajaran mapel = inputScoreSubjectCombo.getValue();
             Siswa siswa = inputScoreStudentCombo.getValue();
             String examType = inputScoreExamTypeCombo.getValue();
-            if (kelas == null || mapel == null || siswa == null || examType == null || inputScoreField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Pastikan semua field terisi dengan benar."); return;
+            if (kelas == null || mapel == null || siswa == null || examType == null) {
+                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Pastikan semua field terisi dengan benar.");
+                return;
             }
-            BigDecimal score = new BigDecimal(inputScoreField.getText());
+            BigDecimal score = new BigDecimal(scoreText);
+            if (score.compareTo(BigDecimal.ZERO) < 0 || score.compareTo(new BigDecimal("100")) > 0) {
+                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Nilai harus di antara 0 dan 100.");
+                return;
+            }
             NilaiUjian newNilai = new NilaiUjian(0, examType, score, kelas.getSemester(), mapel.getIdMapel(), siswa.getNis());
             if(nilaiUjianDAO.addNilaiUjian(newNilai)) {
                 showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil ditambahkan.");
@@ -378,16 +411,27 @@ public class GuruController implements Initializable {
                 showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal menambahkan nilai.");
             }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai yang dimasukkan bukan angka yang valid.");
         }
     }
     @FXML void handleUpdateScoreButtonAction(ActionEvent event) {
         NilaiUjian selectedNilai = existingScoreTable.getSelectionModel().getSelectedItem();
-        if (selectedNilai == null || editScoreField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih nilai dari tabel dan isi field skor baru."); return;
+        if (selectedNilai == null) {
+            showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih nilai dari tabel yang ingin diubah.");
+            return;
+        }
+        String scoreText = editScoreField.getText();
+        if (scoreText.isEmpty() || !scoreText.matches("\\d*\\.?\\d*")) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka yang valid.");
+            return;
         }
         try {
-            selectedNilai.setNilai(new BigDecimal(editScoreField.getText()));
+            BigDecimal newScore = new BigDecimal(scoreText);
+            if (newScore.compareTo(BigDecimal.ZERO) < 0 || newScore.compareTo(new BigDecimal("100")) > 0) {
+                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Nilai harus di antara 0 dan 100.");
+                return;
+            }
+            selectedNilai.setNilai(newScore);
             if (nilaiUjianDAO.updateNilaiUjian(selectedNilai)) {
                 showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil diperbarui.");
                 existingScoreTable.refresh();
@@ -395,7 +439,7 @@ public class GuruController implements Initializable {
                 showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui nilai.");
             }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai yang dimasukkan bukan angka yang valid.");
         }
     }
     @FXML void handleRefreshScheduleButtonAction(ActionEvent event) {
@@ -408,5 +452,4 @@ public class GuruController implements Initializable {
         }
         showAlert(Alert.AlertType.INFORMATION, "Cetak Rapor", "Logika untuk mencetak rapor " + homeroomRaporStudentCombo.getValue().getNama() + " akan dijalankan di sini.");
     }
-    //</editor-fold>
 }
