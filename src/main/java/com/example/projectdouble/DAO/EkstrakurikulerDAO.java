@@ -103,7 +103,7 @@ public class EkstrakurikulerDAO {
      * @param idEkstrakurikuler ID ekstrakurikuler.
      * @return Objek Ekstrakurikuler jika ditemukan, null jika tidak.
      */
-    public Ekstrakurikuler getEkstrakurikulerById(int idEkstrakurikuler) {
+    public static Ekstrakurikuler getEkstrakurikulerById(int idEkstrakurikuler) {
         // Menggunakan nama tabel lowercase 'ekstrakurikuler'
         String sql = "SELECT id_ekstrakurikuler, nama, tingkat FROM ekstrakurikuler WHERE id_ekstrakurikuler = ?";
         try (Connection conn = DBConnect.getConnection();

@@ -1,31 +1,175 @@
 package com.example.projectdouble.controller;
 
-public class GuruController {
-}
+import com.example.projectdouble.DAO.*;
+import com.example.projectdouble.model.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
-        // Homeroom Attendance
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+public class GuruController implements Initializable {
+
+    //<editor-fold desc="DAO Instances and FXML Declarations">
+    // ... (Semua deklarasi FXML dan DAO dari jawaban sebelumnya tetap sama)
+    private final GuruDAO guruDAO = new GuruDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final PengumumanDAO pengumumanDAO = new PengumumanDAO();
+    private final JadwalKelasDAO jadwalKelasDAO = new JadwalKelasDAO();
+    private final AgendaSekolahDAO agendaSekolahDAO = new AgendaSekolahDAO();
+    private final KelasDAO kelasDAO = new KelasDAO();
+    private final MataPelajaranDAO mataPelajaranDAO = new MataPelajaranDAO();
+    private final SiswaDAO siswaDAO = new SiswaDAO();
+    private final NilaiUjianDAO nilaiUjianDAO = new NilaiUjianDAO();
+    private final TugasDAO tugasDAO = new TugasDAO();
+    private final TahunAjaranDAO tahunAjaranDAO = new TahunAjaranDAO();
+    private final PembinaDAO pembinaDAO = new PembinaDAO();
+    private final PesertaEkskulDAO pesertaEkskulDAO = new PesertaEkskulDAO();
+    private final PresensiDAO presensiDAO = new PresensiDAO();
+    private final EkstrakurikulerDAO ekstrakurikulerDAO = new EkstrakurikulerDAO();
+
+    @FXML private Label welcome;
+    @FXML private Button logout;
+    @FXML private TabPane tabPane;
+    @FXML private TableView<Pengumuman> announcementsTable;
+    @FXML private TableColumn<Pengumuman, String> announcementsTitleCol, announcementsDateCol, announcementsContentCol, announcementsAttachmentCol;
+    @FXML private TextField biodataNipField, biodataNameField, biodataEmailField, biodataPhoneField;
+    @FXML private TextField editBiodataNipField, editBiodataNameField, editBiodataEmailField, editBiodataPhoneField;
+    @FXML private ComboBox<String> biodataGenderCombo, editBiodataGenderCombo;
+    @FXML private TextField editPasswordUsernameField;
+    @FXML private TextField editPasswordOldPassField, editPasswordNewPassField;
+    @FXML private Button updateBiodataButton, changePasswordButton;
+    @FXML private ChoiceBox<Kelas> scheduleClassChoice;
+    @FXML private ChoiceBox<MataPelajaran> scheduleSubjectChoice;
+    @FXML private Button scheduleRefreshButton;
+    @FXML private TableView<JadwalKelas> scheduleTable;
+    @FXML private TableColumn<JadwalKelas, String> scheduleDayCol, scheduleStartCol, scheduleEndCol, scheduleSubjectCol, scheduleClassCol;
+    @FXML private ComboBox<Kelas> inputScoreClassCombo;
+    @FXML private ComboBox<MataPelajaran> inputScoreSubjectCombo;
+    @FXML private ComboBox<String> inputScoreExamTypeCombo;
+    @FXML private ComboBox<Siswa> inputScoreStudentCombo;
+    @FXML private ComboBox<TahunAjaran> inputScoreSchoolYearCombo;
+    @FXML private ComboBox<String> inputScoreSemesterCombo;
+    @FXML private TextField inputScoreField, editScoreField;
+    @FXML private Button inputScoreSubmitButton, updateScoreButton;
+    @FXML private TableView<NilaiUjian> existingScoreTable;
+    @FXML private TableColumn<NilaiUjian, String> existingScoreStudentCol, existingScoreExamTypeCol;
+    @FXML private TableColumn<NilaiUjian, BigDecimal> existingScoreCol;
+    @FXML private ComboBox<Kelas> assignmentClassCombo;
+    @FXML private ComboBox<MataPelajaran> assignmentSubjectCombo;
+    @FXML private ComboBox<TahunAjaran> assignmentSchoolYearCombo;
+    @FXML private ComboBox<String> assignmentSemesterCombo;
+    @FXML private TextField assignmentTitleField;
+    @FXML private TextArea assignmentDescriptionArea;
+    @FXML private DatePicker assignmentDeadlinePicker;
+    @FXML private Button addAssignmentButton;
+    @FXML private TableView<Tugas> assignmentTable;
+    @FXML private TableColumn<Tugas, String> assignmentTitleCol, assignmentDescCol, assignmentDeadlineCol, assignmentSubjectCol, assignmentClassCol;
+    @FXML private Tab homeroomTab;
+    @FXML private ComboBox<TahunAjaran> homeroomSchoolYearCombo;
+    @FXML private TextField homeroomClassField;
+    @FXML private TableView<Siswa> homeroomStudentsTable;
+    @FXML private TableColumn<Siswa, String> homeroomNisCol, homeroomStudentNameCol, homeroomGenderCol;
+    @FXML private ComboBox<Siswa> homeroomAttendanceStudentCombo, homeroomRaporStudentCombo;
+    @FXML private DatePicker homeroomAttendanceDatePicker;
+    @FXML private ComboBox<String> homeroomAttendanceStatusCombo;
+    @FXML private Button recordAttendanceButton;
+    @FXML private TableView<Presensi> homeroomAttendanceTable;
+    @FXML private TableColumn<Presensi, String> homeroomAttendanceDateCol, homeroomAttendanceStudentCol, homeroomAttendanceStatusCol, homeroomAttendanceClassCol;
+    @FXML private Button homeroomPrintRaporButton;
+    @FXML private ComboBox<TahunAjaran> agendaSchoolYearCombo;
+    @FXML private ComboBox<String> agendaSemesterCombo;
+    @FXML private TableView<AgendaSekolah> agendaTable;
+    @FXML private TableColumn<AgendaSekolah, String> agendaContentCol, agendaStartCol, agendaEndCol;
+    @FXML private Tab extracurricularTab;
+    @FXML private TableView<Ekstrakurikuler> mentorExtracurricularTable;
+    @FXML private TableColumn<Ekstrakurikuler, String> mentorExtraNameCol, mentorExtraLevelCol;
+    @FXML private ComboBox<Ekstrakurikuler> mentorExtraSelectCombo;
+    @FXML private Label mentorLevelLabel;
+    @FXML private ComboBox<String> mentorLevelSelectCombo;
+    @FXML private ComboBox<TahunAjaran> mentorSchoolYearCombo;
+    @FXML private ComboBox<String> mentorSemesterCombo;
+    @FXML private TableView<Siswa> mentorStudentTable;
+    @FXML private TableColumn<Siswa, String> mentorStudentNisCol, mentorStudentNameCol, mentorStudentGenderCol, mentorStudentClassCol;
+    //</editor-fold>
+
+    private Guru currentTeacher;
+
+    //<editor-fold desc="Initialize, Setup, dan Load Data (Tidak Berubah)">
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        setupAllUIComponents();
+        loadInitialData();
+    }
+    public void initData(String username) {
+        if (username == null || username.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Login Error", "Username (NIP) tidak diterima dari halaman login.");
+            return;
+        }
+        currentTeacher = guruDAO.getGuruByNip(username);
+        if (currentTeacher != null) {
+            welcome.setText("Welcome, " + currentTeacher.getNama() + "!");
+            loadDataForGuru();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Fatal Error", "Gagal memuat data guru dengan NIP: " + username);
+        }
+    }
+    private void setupAllUIComponents() {
+        setupTableColumns();
+        populateStaticComboBoxes();
+        addListeners();
+    }
+    private void setupTableColumns() {
+        announcementsTitleCol.setCellValueFactory(new PropertyValueFactory<>("judul"));
+        announcementsDateCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getTanggal().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))));
+        announcementsContentCol.setCellValueFactory(new PropertyValueFactory<>("deskripsi"));
+        announcementsAttachmentCol.setCellValueFactory(new PropertyValueFactory<>("lampiran"));
+        scheduleDayCol.setCellValueFactory(new PropertyValueFactory<>("hari"));
+        scheduleStartCol.setCellValueFactory(new PropertyValueFactory<>("jamMulai"));
+        scheduleEndCol.setCellValueFactory(new PropertyValueFactory<>("jamSelesai"));
+        scheduleSubjectCol.setCellValueFactory(new PropertyValueFactory<>("namaMapel"));
+        scheduleClassCol.setCellValueFactory(new PropertyValueFactory<>("namaKelas"));
+        existingScoreStudentCol.setCellValueFactory(new PropertyValueFactory<>("namaSiswa"));
+        existingScoreExamTypeCol.setCellValueFactory(new PropertyValueFactory<>("jenisUjian"));
+        existingScoreCol.setCellValueFactory(new PropertyValueFactory<>("nilai"));
+        assignmentTitleCol.setCellValueFactory(new PropertyValueFactory<>("judul"));
+        assignmentDescCol.setCellValueFactory(new PropertyValueFactory<>("deskripsi"));
+        assignmentDeadlineCol.setCellValueFactory(new PropertyValueFactory<>("tanggalDeadline"));
+        homeroomNisCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
+        homeroomStudentNameCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
+        homeroomGenderCol.setCellValueFactory(new PropertyValueFactory<>("jenisKelamin"));
         homeroomAttendanceDateCol.setCellValueFactory(new PropertyValueFactory<>("tanggal"));
         homeroomAttendanceStudentCol.setCellValueFactory(new PropertyValueFactory<>("namaSiswa"));
         homeroomAttendanceStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         homeroomAttendanceClassCol.setCellValueFactory(new PropertyValueFactory<>("namaKelas"));
-
-        // School Agenda
         agendaContentCol.setCellValueFactory(new PropertyValueFactory<>("judul"));
         agendaStartCol.setCellValueFactory(new PropertyValueFactory<>("tanggalMulai"));
         agendaEndCol.setCellValueFactory(new PropertyValueFactory<>("tanggalSelesai"));
-
-        // Extracurricular Mentor - My Ekskul
         mentorExtraNameCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
         mentorExtraLevelCol.setCellValueFactory(new PropertyValueFactory<>("tingkat"));
-        // Extracurricular Mentor - Student List
         mentorStudentNisCol.setCellValueFactory(new PropertyValueFactory<>("nis"));
         mentorStudentNameCol.setCellValueFactory(new PropertyValueFactory<>("nama"));
         mentorStudentGenderCol.setCellValueFactory(new PropertyValueFactory<>("jenisKelamin"));
         mentorStudentClassCol.setCellValueFactory(new PropertyValueFactory<>("namaKelas"));
     }
-
     private void populateStaticComboBoxes() {
-        // ... (Kode populateStaticComboBoxes sama seperti jawaban sebelumnya) ...
         biodataGenderCombo.getItems().addAll("Laki-laki", "Perempuan");
         editBiodataGenderCombo.getItems().addAll("Laki-laki", "Perempuan");
         inputScoreExamTypeCombo.getItems().addAll("UAS", "UTS", "Kuis", "Tugas Harian");
@@ -34,28 +178,48 @@ public class GuruController {
         agendaSemesterCombo.getItems().addAll("Ganjil", "Genap");
         mentorSemesterCombo.getItems().addAll("Ganjil", "Genap");
         homeroomAttendanceStatusCombo.getItems().addAll("Hadir", "Izin", "Sakit", "Alpa");
+        mentorLevelSelectCombo.getItems().addAll("Siaga", "Penggalang");
+        mentorLevelSelectCombo.setPromptText("Semua Level");
     }
-
     private void addListeners() {
-        // ... (Kode addListeners sama seperti jawaban sebelumnya) ...
         inputScoreClassCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                List<Siswa> students = siswaDAO.getStudentsInClass(newVal.getIdKelas(), newVal.getIdTahunAjaran(), newVal.getSemester());
-                inputScoreStudentCombo.setItems(FXCollections.observableArrayList(students));
+                inputScoreStudentCombo.setItems(FXCollections.observableArrayList(siswaDAO.getStudentsInClass(newVal.getIdKelas(), newVal.getIdTahunAjaran(), newVal.getSemester())));
             }
         });
         agendaSchoolYearCombo.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> filterSchoolAgenda());
         agendaSemesterCombo.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> filterSchoolAgenda());
         mentorExtraSelectCombo.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
-            if (n != null) {
-                mentorStudentTable.setItems(FXCollections.observableArrayList(pesertaEkskulDAO.getStudentsByExtracurricular(n.getIdEkstrakurikuler())));
+            boolean isPramuka = n != null && n.getNama().equalsIgnoreCase("Pramuka");
+            mentorLevelLabel.setVisible(isPramuka);
+            mentorLevelSelectCombo.setVisible(isPramuka);
+            mentorLevelSelectCombo.setDisable(!isPramuka);
+            if (!isPramuka) {
+                mentorLevelSelectCombo.getSelectionModel().clearSelection();
             }
+            filterMentorStudents();
         });
+        mentorLevelSelectCombo.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> filterMentorStudents());
     }
-
-    private void loadAllDataForTeacher() {
-        // ... (Kode loadAllDataForTeacher sama seperti jawaban sebelumnya) ...
-        // Load Biodata
+    private void loadInitialData() {
+        announcementsTable.setItems(FXCollections.observableArrayList(pengumumanDAO.getAllPengumuman()));
+        agendaTable.setItems(FXCollections.observableArrayList(agendaSekolahDAO.getAllAgendaSekolah()));
+        assignmentTable.setItems(FXCollections.observableArrayList(tugasDAO.getAllTugas()));
+        ObservableList<Kelas> allClasses = FXCollections.observableArrayList(kelasDAO.getAllKelas());
+        ObservableList<MataPelajaran> allSubjects = FXCollections.observableArrayList(mataPelajaranDAO.getAllMataPelajaran());
+        ObservableList<TahunAjaran> allSchoolYears = FXCollections.observableArrayList(tahunAjaranDAO.getAllTahunAjaran());
+        inputScoreClassCombo.setItems(allClasses);
+        inputScoreSubjectCombo.setItems(allSubjects);
+        inputScoreSchoolYearCombo.setItems(allSchoolYears);
+        assignmentClassCombo.setItems(allClasses);
+        assignmentSubjectCombo.setItems(allSubjects);
+        assignmentSchoolYearCombo.setItems(allSchoolYears);
+        agendaSchoolYearCombo.setItems(allSchoolYears);
+        homeroomSchoolYearCombo.setItems(allSchoolYears);
+        mentorSchoolYearCombo.setItems(allSchoolYears);
+    }
+    private void loadDataForGuru() {
+        if (currentTeacher == null) return;
         biodataNipField.setText(currentTeacher.getNip());
         biodataNameField.setText(currentTeacher.getNama());
         biodataGenderCombo.setValue(currentTeacher.getJenisKelamin());
@@ -67,249 +231,61 @@ public class GuruController {
         editBiodataEmailField.setText(currentTeacher.getEmail());
         editBiodataPhoneField.setText(currentTeacher.getNoHp());
         editPasswordUsernameField.setText(currentTeacher.getUsernameUser());
-
-        // Load Announcements
-        pengumumanList.setAll(pengumumanDAO.getAllPengumuman());
-        announcementsTable.setItems(pengumumanList);
-
-        // Load My Schedule
-        List<JadwalKelas> allSchedules = jadwalKelasDAO.getAllJadwalKelasDetails();
-        jadwalGuruList.setAll(allSchedules.stream()
-                .filter(j -> j.getNipGuru().equals(currentTeacher.getNip()))
-                .collect(Collectors.toList()));
-        scheduleTable.setItems(jadwalGuruList);
-
-        // Load data for ComboBoxes
-        ObservableList<Kelas> allClasses = FXCollections.observableArrayList(kelasDAO.getAllKelas());
-        ObservableList<MataPelajaran> allSubjects = FXCollections.observableArrayList(mataPelajaranDAO.getAllMataPelajaran());
-        ObservableList<TahunAjaran> allSchoolYears = FXCollections.observableArrayList(tahunAjaranDAO.getAllTahunAjaran());
-
-        inputScoreClassCombo.setItems(allClasses);
-        inputScoreSubjectCombo.setItems(allSubjects);
-        inputScoreSchoolYearCombo.setItems(allSchoolYears);
-        assignmentClassCombo.setItems(allClasses);
-        assignmentSubjectCombo.setItems(allSubjects);
-        assignmentSchoolYearCombo.setItems(allSchoolYears);
-        agendaSchoolYearCombo.setItems(allSchoolYears);
-        homeroomSchoolYearCombo.setItems(allSchoolYears);
-        mentorSchoolYearCombo.setItems(allSchoolYears);
-
-        // Load other tables
-        agendaSekolahList.setAll(agendaSekolahDAO.getAllAgendaSekolah());
-        agendaTable.setItems(agendaSekolahList);
-        tugasList.setAll(tugasDAO.getAllTugas());
-        assignmentTable.setItems(tugasList);
-
-        checkAndSetupRoleBasedTabs();
+        scheduleTable.setItems(FXCollections.observableArrayList(jadwalKelasDAO.getAllJadwalKelasDetails().stream().filter(j -> j.getNipGuru().equals(currentTeacher.getNip())).collect(Collectors.toList())));
+        checkAndSetupConditionalTabs();
     }
-
-    private void checkAndSetupRoleBasedTabs() {
-        // ... (Kode checkAndSetupRoleBasedTabs sama seperti jawaban sebelumnya) ...
-        // Homeroom Teacher Check
-        Kelas homeroomClass = kelasDAO.getAllKelas().stream()
-                .filter(k -> k.getNipWaliKelas() != null && k.getNipWaliKelas().equals(currentTeacher.getNip()))
-                .findFirst().orElse(null);
-
+    private void checkAndSetupConditionalTabs() {
+        Kelas homeroomClass = kelasDAO.getAllKelas().stream().filter(k -> Objects.equals(k.getNipWaliKelas(), currentTeacher.getNip())).findFirst().orElse(null);
         homeroomTab.setDisable(homeroomClass == null);
         if (homeroomClass != null) {
             homeroomClassField.setText(homeroomClass.toString());
             List<Siswa> students = siswaDAO.getStudentsInClass(homeroomClass.getIdKelas(), homeroomClass.getIdTahunAjaran(), homeroomClass.getSemester());
-            homeroomStudentsTable.setItems(FXCollections.observableArrayList(students));
-            homeroomAttendanceStudentCombo.setItems(FXCollections.observableArrayList(students));
-            homeroomRaporStudentCombo.setItems(FXCollections.observableArrayList(students));
+            ObservableList<Siswa> studentList = FXCollections.observableArrayList(students);
+            homeroomStudentsTable.setItems(studentList);
+            homeroomAttendanceStudentCombo.setItems(studentList);
+            homeroomRaporStudentCombo.setItems(studentList);
         }
-
-        // Extracurricular Mentor Check
-        List<Ekstrakurikuler> mentoredEkskul = pembinaDAO.getAllPembina().stream()
-                .filter(p -> p.getNipGuru().equals(currentTeacher.getNip()))
-                .map(p -> ekstrakurikulerDAO.getEkstrakurikulerById(p.getIdEkstrakurikuler()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
+        List<Ekstrakurikuler> mentoredEkskul = pembinaDAO.getAllPembina().stream().filter(p -> p.getNipGuru().equals(currentTeacher.getNip())).map(p -> ekstrakurikulerDAO.getEkstrakurikulerById(p.getIdEkstrakurikuler())).filter(Objects::nonNull).collect(Collectors.toList());
         extracurricularTab.setDisable(mentoredEkskul.isEmpty());
         if (!mentoredEkskul.isEmpty()) {
             mentorExtracurricularTable.setItems(FXCollections.observableArrayList(mentoredEkskul));
             mentorExtraSelectCombo.setItems(FXCollections.observableArrayList(mentoredEkskul));
         }
+        mentorLevelLabel.setVisible(false);
+        mentorLevelSelectCombo.setVisible(false);
+        mentorLevelSelectCombo.setDisable(true);
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Action Handlers with Full Logic">
-    @FXML
-    void handleLogoutButtonAction(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Apakah Anda yakin ingin logout?", ButtonType.OK, ButtonType.CANCEL);
-        alert.setTitle("Konfirmasi Logout");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            ((Stage) logout.getScene().getWindow()).close();
+    private void filterMentorStudents() {
+        Ekstrakurikuler selectedEkskul = mentorExtraSelectCombo.getValue();
+        String selectedPramukaLevel = mentorLevelSelectCombo.getValue();
+        if (selectedEkskul == null) {
+            mentorStudentTable.getItems().clear();
+            return;
         }
-    }
-
-    @FXML
-    void handleUpdateBiodataButtonAction(ActionEvent event) {
-        Guru updatedGuru = new Guru(
-                currentTeacher.getNip(), currentTeacher.getIdUser(), editBiodataNameField.getText(),
-                editBiodataGenderCombo.getValue(), editBiodataEmailField.getText(), editBiodataPhoneField.getText(),
-                currentTeacher.getUsernameUser(), currentTeacher.getPasswordUser()
-        );
-        if (guruDAO.updateGuru(updatedGuru)) {
-            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Data biodata berhasil diperbarui.");
-            currentTeacher = updatedGuru;
-            loadAllDataForTeacher();
+        List<Siswa> studentsInEkskul = pesertaEkskulDAO.getStudentsByExtracurricular(selectedEkskul.getIdEkstrakurikuler());
+        if (selectedEkskul.getNama().equalsIgnoreCase("Pramuka") && selectedPramukaLevel != null) {
+            final List<String> siagaGrades = Arrays.asList("1", "2", "3", "4");
+            final List<String> penggalangGrades = Arrays.asList("5", "6", "7", "8", "9");
+            List<Siswa> filteredStudents = studentsInEkskul.stream()
+                    .filter(siswa -> {
+                        if (siswa.getIdKelas() == null) return false;
+                        Kelas kelasSiswa = kelasDAO.getKelasById(siswa.getIdKelas());
+                        if (kelasSiswa == null || kelasSiswa.getTingkat() == null) return false;
+                        String siswaTingkat = kelasSiswa.getTingkat();
+                        if ("Siaga".equalsIgnoreCase(selectedPramukaLevel)) {
+                            return siagaGrades.contains(siswaTingkat);
+                        } else if ("Penggalang".equalsIgnoreCase(selectedPramukaLevel)) {
+                            return penggalangGrades.contains(siswaTingkat);
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+            mentorStudentTable.setItems(FXCollections.observableArrayList(filteredStudents));
         } else {
-            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui data biodata.");
+            mentorStudentTable.setItems(FXCollections.observableArrayList(studentsInEkskul));
         }
     }
-
-    @FXML
-    void handleChangePasswordButtonAction(ActionEvent event) {
-        String username = editPasswordUsernameField.getText();
-        String oldPassword = editPasswordOldPassField.getText();
-        String newPassword = editPasswordNewPassField.getText();
-
-        if (username.isEmpty() || oldPassword.isEmpty() || newPassword.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Input Tidak Lengkap", "Semua field harus diisi.");
-            return;
-        }
-
-        User user = userDAO.authenticateUser(username, oldPassword, "guru");
-        if (user == null) {
-            showAlert(Alert.AlertType.ERROR, "Autentikasi Gagal", "Username atau password lama salah.");
-            return;
-        }
-
-        // Karena UserDAO Anda tidak punya updatePassword, kita panggil updateUsername sebagai placeholder.
-        // Anda HARUS menambahkan metode updatePassword di UserDAO. (Lihat Bagian 3 di bawah)
-        boolean success = userDAO.updatePassword(user.getIdUser(), newPassword); // Ganti ini setelah Anda menambahkannya
-
-        if (success) {
-            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Password berhasil diubah.");
-            editPasswordOldPassField.clear();
-            editPasswordNewPassField.clear();
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal mengubah password di database.");
-        }
-    }
-
-    @FXML
-    void handleSubmitScoreButtonAction(ActionEvent event) {
-        try {
-            Kelas kelas = inputScoreClassCombo.getValue();
-            MataPelajaran mapel = inputScoreSubjectCombo.getValue();
-            Siswa siswa = inputScoreStudentCombo.getValue();
-            String examType = inputScoreExamTypeCombo.getValue();
-
-            if (kelas == null || mapel == null || siswa == null || examType == null || inputScoreField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Pastikan semua field terisi dengan benar.");
-                return;
-            }
-            String semester = kelas.getSemester();
-            BigDecimal score = new BigDecimal(inputScoreField.getText());
-            if (score.doubleValue() < 0 || score.doubleValue() > 100) {
-                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Nilai harus antara 0 dan 100.");
-                return;
-            }
-
-            NilaiUjian newNilai = new NilaiUjian(0, examType, score, semester, mapel.getIdMapel(), siswa.getNis());
-            if(nilaiUjianDAO.addNilaiUjian(newNilai)) {
-                showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil ditambahkan.");
-                inputScoreField.clear();
-                // Refresh table
-                existingScoreTable.setItems(FXCollections.observableArrayList(nilaiUjianDAO.getNilaiUjianByGuru(currentTeacher.getNip())));
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal menambahkan nilai ke database.");
-            }
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
-        }
-    }
-
-    @FXML
-    void handleAddAssignmentButtonAction(ActionEvent event) {
-        if (assignmentTitleField.getText().isEmpty() || assignmentDescriptionArea.getText().isEmpty() || assignmentDeadlinePicker.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Input Tidak Lengkap", "Judul, Deskripsi, dan Deadline harus diisi.");
-            return;
-        }
-        Tugas newTugas = new Tugas(0, assignmentTitleField.getText(), assignmentDescriptionArea.getText(), assignmentDeadlinePicker.getValue());
-        if (tugasDAO.addTugas(newTugas)) {
-            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Tugas baru berhasil ditambahkan.");
-            tugasList.setAll(tugasDAO.getAllTugas()); // Refresh
-            assignmentTitleField.clear();
-            assignmentDescriptionArea.clear();
-            assignmentDeadlinePicker.setValue(null);
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal menambahkan tugas ke database.");
-        }
-    }
-
-    @FXML
-    void handleRecordAttendanceButtonAction(ActionEvent event) {
-        Siswa selectedSiswa = homeroomAttendanceStudentCombo.getValue();
-        if (selectedSiswa == null || homeroomAttendanceDatePicker.getValue() == null || homeroomAttendanceStatusCombo.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Input Tidak Lengkap", "Pilih siswa, tanggal, dan status.");
-            return;
-        }
-
-        // Catatan: Presensi memerlukan id_jadwal_kelas. Logika ini sangat disederhanakan.
-        // Asumsi: kita mengambil jadwal pertama untuk kelas wali di hari itu.
-        int idJadwalKelasPlaceholder = 1; // Ganti dengan logika pencarian jadwal yang lebih baik jika perlu
-
-        Presensi presensi = new Presensi(0, homeroomAttendanceDatePicker.getValue(), homeroomAttendanceStatusCombo.getValue(), selectedSiswa.getNis(), idJadwalKelasPlaceholder);
-        if (presensiDAO.addPresensi(presensi)) {
-            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Absensi untuk " + selectedSiswa.getNama() + " berhasil direkam.");
-            homeroomAttendanceTable.setItems(FXCollections.observableArrayList(presensiDAO.getAllPresensi()));
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal merekam absensi ke database.");
-        }
-    }
-
-    @FXML
-    void handlePrintRaporButtonAction(ActionEvent event) {
-        Siswa selectedSiswa = homeroomRaporStudentCombo.getValue();
-        if(selectedSiswa == null) {
-            showAlert(Alert.AlertType.WARNING, "Siswa Belum Dipilih", "Silakan pilih siswa untuk mencetak rapor.");
-            return;
-        }
-        // Di sini Anda akan memanggil library atau class khusus untuk generate PDF/laporan
-        // 1. Kumpulkan semua data yang diperlukan (biodata siswa, nilai, absensi, dll)
-        // 2. Pass data tersebut ke service/class report generator Anda.
-        showAlert(Alert.AlertType.INFORMATION, "Cetak Rapor", "Logika untuk mencetak rapor " + selectedSiswa.getNama() + " akan dijalankan di sini.\nData siap untuk diproses oleh JasperReports atau library lainnya.");
-    }
-
-    @FXML
-    void handleRefreshScheduleButtonAction(ActionEvent event) {
-        jadwalGuruList.setAll(jadwalKelasDAO.getAllJadwalKelasDetails().stream()
-                .filter(j -> j.getNipGuru().equals(currentTeacher.getNip()))
-                .collect(Collectors.toList()));
-        showAlert(Alert.AlertType.INFORMATION, "Refreshed", "Jadwal telah dimuat ulang.");
-    }
-
-    @FXML
-    void handleUpdateScoreButtonAction(ActionEvent event) {
-        NilaiUjian selectedNilai = existingScoreTable.getSelectionModel().getSelectedItem();
-        if (selectedNilai == null) {
-            showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih nilai yang ingin diubah dari tabel.");
-            return;
-        }
-        try {
-            BigDecimal newScore = new BigDecimal(editScoreField.getText());
-            selectedNilai.setNilai(newScore);
-            if (nilaiUjianDAO.updateNilaiUjian(selectedNilai)) {
-                showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil diperbarui.");
-                existingScoreTable.refresh();
-                editScoreField.clear();
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui nilai di database.");
-            }
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
-        }
-    }
-
-    //</editor-fold>
-
     private void filterSchoolAgenda() {
-        // ... (Kode filterSchoolAgenda sama seperti jawaban sebelumnya) ...
         TahunAjaran ta = agendaSchoolYearCombo.getValue();
         String semester = agendaSemesterCombo.getValue();
         if(ta != null && semester != null && !semester.isEmpty()) {
@@ -318,13 +294,119 @@ public class GuruController {
             agendaTable.setItems(FXCollections.observableArrayList(agendaSekolahDAO.getAllAgendaSekolah()));
         }
     }
-
     private void showAlert(Alert.AlertType alertType, String title, String message) {
-        // ... (Kode showAlert sama seperti jawaban sebelumnya) ...
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Action Handlers">
+
+    // MODIFIKASI: Logika logout diubah untuk kembali ke halaman login
+    @FXML
+    void handleLogoutButtonAction(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Apakah Anda yakin ingin logout?", ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle("Konfirmasi Logout");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Asumsi file login Anda bernama login.fxml dan berada di path yang sama
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/projectdouble/login.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = (Stage) logout.getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Login");
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Error", "Gagal memuat halaman login.");
+            }
+        }
+    }
+
+    @FXML void handleUpdateBiodataButtonAction(ActionEvent event) {
+        Guru updatedGuru = new Guru(currentTeacher.getNip(), currentTeacher.getIdUser(), editBiodataNameField.getText(), editBiodataGenderCombo.getValue(), editBiodataEmailField.getText(), editBiodataPhoneField.getText(), currentTeacher.getUsernameUser(), currentTeacher.getPasswordUser());
+        if (guruDAO.updateGuru(updatedGuru)) {
+            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Data biodata berhasil diperbarui.");
+            currentTeacher = updatedGuru;
+            loadDataForGuru();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui data biodata.");
+        }
+    }
+    @FXML void handleChangePasswordButtonAction(ActionEvent event) {
+        showAlert(Alert.AlertType.WARNING, "Fitur Tidak Tersedia", "Fungsionalitas ganti password tidak dapat digunakan karena metode untuk mengubah password tidak ditemukan di UserDAO.");
+    }
+    @FXML void handleAddAssignmentButtonAction(ActionEvent event) {
+        if (assignmentTitleField.getText().isEmpty() || assignmentDescriptionArea.getText().isEmpty() || assignmentDeadlinePicker.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Input Tidak Lengkap", "Judul, Deskripsi, dan Deadline harus diisi.");
+            return;
+        }
+        Tugas newTugas = new Tugas(0, assignmentTitleField.getText(), assignmentDescriptionArea.getText(), assignmentDeadlinePicker.getValue());
+        if (tugasDAO.addTugas(newTugas)) {
+            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Tugas baru berhasil ditambahkan (tanpa info kelas/mapel).");
+            assignmentTable.setItems(FXCollections.observableArrayList(tugasDAO.getAllTugas()));
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal menambahkan tugas ke database.");
+        }
+    }
+    @FXML void handleRecordAttendanceButtonAction(ActionEvent event) {
+        showAlert(Alert.AlertType.WARNING, "Fitur Tidak Tersedia", "Tidak bisa merekam absensi karena tidak ada cara untuk menentukan Jadwal Kelas spesifik dari UI ini. Diperlukan modifikasi pada UI atau Model Presensi.");
+    }
+    @FXML void handleSubmitScoreButtonAction(ActionEvent event) {
+        try {
+            Kelas kelas = inputScoreClassCombo.getValue();
+            MataPelajaran mapel = inputScoreSubjectCombo.getValue();
+            Siswa siswa = inputScoreStudentCombo.getValue();
+            String examType = inputScoreExamTypeCombo.getValue();
+            if (kelas == null || mapel == null || siswa == null || examType == null || inputScoreField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Input Tidak Valid", "Pastikan semua field terisi dengan benar."); return;
+            }
+            BigDecimal score = new BigDecimal(inputScoreField.getText());
+            NilaiUjian newNilai = new NilaiUjian(0, examType, score, kelas.getSemester(), mapel.getIdMapel(), siswa.getNis());
+            if(nilaiUjianDAO.addNilaiUjian(newNilai)) {
+                showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil ditambahkan.");
+                existingScoreTable.setItems(FXCollections.observableArrayList(nilaiUjianDAO.getAllNilaiUjian()));
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal menambahkan nilai.");
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
+        }
+    }
+    @FXML void handleUpdateScoreButtonAction(ActionEvent event) {
+        NilaiUjian selectedNilai = existingScoreTable.getSelectionModel().getSelectedItem();
+        if (selectedNilai == null || editScoreField.getText().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Peringatan", "Pilih nilai dari tabel dan isi field skor baru."); return;
+        }
+        try {
+            selectedNilai.setNilai(new BigDecimal(editScoreField.getText()));
+            if (nilaiUjianDAO.updateNilaiUjian(selectedNilai)) {
+                showAlert(Alert.AlertType.INFORMATION, "Sukses", "Nilai berhasil diperbarui.");
+                existingScoreTable.refresh();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Gagal", "Gagal memperbarui nilai.");
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Salah", "Nilai harus berupa angka.");
+        }
+    }
+    @FXML void handleRefreshScheduleButtonAction(ActionEvent event) {
+        scheduleTable.setItems(FXCollections.observableArrayList(jadwalKelasDAO.getAllJadwalKelasDetails().stream().filter(j -> j.getNipGuru().equals(currentTeacher.getNip())).collect(Collectors.toList())));
+        showAlert(Alert.AlertType.INFORMATION, "Refreshed", "Jadwal telah dimuat ulang.");
+    }
+    @FXML void handlePrintRaporButtonAction(ActionEvent event) {
+        if(homeroomRaporStudentCombo.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Siswa Belum Dipilih", "Silakan pilih siswa untuk mencetak rapor."); return;
+        }
+        showAlert(Alert.AlertType.INFORMATION, "Cetak Rapor", "Logika untuk mencetak rapor " + homeroomRaporStudentCombo.getValue().getNama() + " akan dijalankan di sini.");
+    }
+    //</editor-fold>
 }
