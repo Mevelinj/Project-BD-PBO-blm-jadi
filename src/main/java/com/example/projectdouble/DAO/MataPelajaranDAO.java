@@ -131,4 +131,30 @@ public class MataPelajaranDAO {
             return false;
         }
     }
+
+    public List<MataPelajaran> getMataPelajaranByJenjangKelas(String jenjangKelas) {
+        List<MataPelajaran> mataPelajaranList = new ArrayList<>();
+        // Query untuk mengambil mata pelajaran berdasarkan jenjang_kelas
+        String sql = "SELECT id_mapel, nama_mapel, jenjang_kelas FROM mata_pelajaran WHERE jenjang_kelas = ? ORDER BY nama_mapel";
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, jenjangKelas);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                mataPelajaranList.add(new MataPelajaran(
+                        rs.getInt("id_mapel"),
+                        rs.getString("nama_mapel"),
+                        rs.getString("jenjang_kelas")
+                ));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saat mengambil mata pelajaran berdasarkan jenjang kelas: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return mataPelajaranList;
+    }
+
 }
