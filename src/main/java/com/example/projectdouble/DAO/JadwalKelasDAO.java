@@ -17,7 +17,7 @@ public class JadwalKelasDAO {
      */
     public boolean addJadwalKelas(JadwalKelas jadwalKelas) {
         // UPDATED: Menambahkan kolom semester ke query INSERT
-        String sql = "INSERT INTO jadwal_kelas (hari, jam_mulai, jam_selesai, id_kelas, id_mapel, nip_guru, semester) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO jadwal_kelas (hari, jam_mulai, jam_selesai, id_kelas, id_mapel, nip_guru) VALUES (?, ?, ?, ?, ?, ?)";//, semester
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, jadwalKelas.getHari());
@@ -26,7 +26,7 @@ public class JadwalKelasDAO {
             stmt.setInt(4, jadwalKelas.getIdKelas());
             stmt.setInt(5, jadwalKelas.getIdMapel());
             stmt.setString(6, jadwalKelas.getNipGuru());
-            stmt.setString(7, jadwalKelas.getSemester()); // NEW: Set parameter semester
+            //stmt.setString(7, jadwalKelas.getSemester()); // NEW: Set parameter semester
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -42,10 +42,10 @@ public class JadwalKelasDAO {
      */
     public List<JadwalKelas> getAllJadwalKelasDetails() {
         List<JadwalKelas> jadwalList = new ArrayList<>();
-        // UPDATED: Memilih kolom semester dari jadwal_kelas (jk.semester)
+        // UPDATED: Memilih kolom semester dari jadwal_kelas (jk.semester) (DIHAPUS)
         String sql = "SELECT jk.id_jadwal_kelas, jk.hari, jk.jam_mulai, jk.jam_selesai, " +
                 "mp.nama_mapel, " +
-                "k.nama_kelas, ta.tahun_mulai, ta.tahun_selesai, jk.semester, " + // Mengambil semester dari jadwal_kelas
+                "k.nama_kelas, ta.tahun_mulai, ta.tahun_selesai, " + // jk.semester DIHAPUS
                 "g.nama " +
                 "FROM jadwal_kelas jk " +
                 "JOIN mata_pelajaran mp ON jk.id_mapel = mp.id_mapel " +
@@ -68,11 +68,12 @@ public class JadwalKelasDAO {
                 int tahunMulai = rs.getInt("tahun_mulai");
                 int tahunSelesai = rs.getInt("tahun_selesai");
                 String tahunAjaranLengkap = tahunMulai + "/" + tahunSelesai;
-                String semester = rs.getString("semester"); // NEW: Mengambil semester dari ResultSet
+                // String semester = rs.getString("semester"); // DIHAPUS: Mengambil semester dari ResultSet
                 String namaGuru = rs.getString("nama");
 
+                // Konstruktor JadwalKelas harus disesuaikan agar tidak lagi menerima 'semester'
                 jadwalList.add(new JadwalKelas(idJadwalKelas, hari, jamMulai, jamSelesai,
-                        namaMapel, namaKelas, tahunAjaranLengkap, semester, namaGuru));
+                        namaMapel, namaKelas, tahunAjaranLengkap, namaGuru)); // DIHAPUS: , semester
             }
         } catch (SQLException e) {
             System.err.println("Error saat mengambil semua detail jadwal kelas: " + e.getMessage());

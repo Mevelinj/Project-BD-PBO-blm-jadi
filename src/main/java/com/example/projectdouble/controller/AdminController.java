@@ -571,9 +571,9 @@ public class AdminController implements Initializable {
         colStudentSchoolYear.setCellValueFactory(cellData -> {
             Siswa siswa = cellData.getValue();
             String tahunAjaran = siswa.getTahunAjaranLengkap();
-            String semester = siswa.getSemester();
-            if (tahunAjaran != null && semester != null) {
-                return new SimpleStringProperty(tahunAjaran + " " + semester);
+            //String semester = siswa.getSemester();
+            if (tahunAjaran != null ) {//&& semester != null
+                return new SimpleStringProperty(tahunAjaran );//+ " " + semester
             }
             return new SimpleStringProperty("");
         });
@@ -621,7 +621,7 @@ public class AdminController implements Initializable {
 
     private void setupManageSchedulesTab() {
         dayChoiceBox.setItems(FXCollections.observableArrayList("Senin", "Selasa", "Rabu", "Kamis", "Jumat"));
-        semesterScheduleComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
+        //semesterScheduleComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
 
         // Setup Schedule Table Columns
         colScheduleDay.setCellValueFactory(new PropertyValueFactory<>("hari"));
@@ -629,7 +629,7 @@ public class AdminController implements Initializable {
         colScheduleSubject.setCellValueFactory(new PropertyValueFactory<>("namaMapel"));
         colScheduleClass.setCellValueFactory(new PropertyValueFactory<>("kelasDanTahunAjaran")); // Uses computed property
         colScheduleTeacher.setCellValueFactory(new PropertyValueFactory<>("namaGuru"));
-        colScheduleSemester.setCellValueFactory(new PropertyValueFactory<>("semester"));
+        //colScheduleSemester.setCellValueFactory(new PropertyValueFactory<>("semester"));
 
         // NEW: Terapkan perataan tengah untuk semua kolom jadwal
         centerAlignColumn(colScheduleDay);
@@ -637,7 +637,7 @@ public class AdminController implements Initializable {
         centerAlignColumn(colScheduleSubject);
         centerAlignColumn(colScheduleClass);
         centerAlignColumn(colScheduleTeacher);
-        centerAlignColumn(colScheduleSemester);
+        //centerAlignColumn(colScheduleSemester);
     }
 
     private void setupManageClassesTab() {
@@ -701,8 +701,8 @@ public class AdminController implements Initializable {
         centerAlignColumn(colAgendaStart);
         centerAlignColumn(colAgendaEnd);
 
-        semesterAgendaAddComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
-        semesterAgendaViewComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
+//        semesterAgendaAddComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
+//        semesterAgendaViewComboBox.setItems(FXCollections.observableArrayList("Ganjil", "Genap"));
 
         agendaTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             // Not implemented: no edit agenda in FXML, only add/delete/view
@@ -711,7 +711,7 @@ public class AdminController implements Initializable {
 
         // Add listeners for filtering agenda table
         schoolYearAgendaViewComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadSchoolAgenda());
-        semesterAgendaViewComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadSchoolAgenda());
+//        semesterAgendaViewComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadSchoolAgenda());
     }
 
 
@@ -750,20 +750,20 @@ public class AdminController implements Initializable {
             }
         });
 
-        // NEW: Listener for schoolYearInputSiswaEkskulComboBox to auto-set semester
+        // NEW: Listener for schoolYearInputSiswaEkskulComboBox (SEMESTER REFERENCE REMOVED)
         schoolYearInputSiswaEkskulComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                semesterInputSiswaEkskulComboBox.getSelectionModel().select("Ganjil"); // Auto-set to Ganjil
-            } else {
-                semesterInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
-            }
+            // Logika auto-set semester dihapus karena tidak lagi diperlukan
+            // semesterInputSiswaEkskulComboBox.getSelectionModel().select("Ganjil"); // DIHAPUS
+            // semesterInputSiswaEkskulComboBox.getSelectionModel().clearSelection(); // DIHAPUS
+
             // Trigger student list load as school year selection changes
             loadStudentsForExtracurricularAssignment();
         });
 
-        // NEW: Listeners for classInputSiswaEkskulComboBox and semesterInputSiswaEkskulComboBox
+        // NEW: Listeners for classInputSiswaEkskulComboBox dan semesterInputSiswaEkskulComboBox
+        // Listener untuk semesterInputSiswaEkskulComboBox DIHAPUS jika semester tidak lagi relevan
         classInputSiswaEkskulComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadStudentsForExtracurricularAssignment());
-        semesterInputSiswaEkskulComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadStudentsForExtracurricularAssignment());
+        // semesterInputSiswaEkskulComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> loadStudentsForExtracurricularAssignment()); // DIHAPUS
 
         // NEW: Listener for extracurricularInputSiswaEkskulComboBox to load students in its table
         extracurricularInputSiswaEkskulComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -990,7 +990,7 @@ public class AdminController implements Initializable {
         classChoiceBox.getSelectionModel().clearSelection();
         teacherChoiceBox.getSelectionModel().clearSelection();
         schoolYearScheduleComboBox.getSelectionModel().clearSelection();
-        semesterScheduleComboBox.getSelectionModel().clearSelection();
+        //semesterScheduleComboBox.getSelectionModel().clearSelection();
     }
 
     private void clearAddSchoolAgendaFields() {
@@ -998,7 +998,7 @@ public class AdminController implements Initializable {
         agendaStartDatePicker.setValue(null);
         agendaEndDatePicker.setValue(null);
         schoolYearAgendaAddComboBox.getSelectionModel().clearSelection();
-        semesterAgendaAddComboBox.getSelectionModel().clearSelection();
+        //semesterAgendaAddComboBox.getSelectionModel().clearSelection();
     }
 
     private void clearAddMentorFields() {
@@ -1014,7 +1014,7 @@ public class AdminController implements Initializable {
     private void clearAddStudentToExtracurricularFields() {
         classInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
         schoolYearInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
-        semesterInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
+        //semesterInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
         extracurricularInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
         levelInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
         studentInputSiswaEkskulComboBox.getSelectionModel().clearSelection();
@@ -1306,10 +1306,10 @@ public class AdminController implements Initializable {
         Kelas selectedKelas = classChoiceBox.getSelectionModel().getSelectedItem();
         Guru selectedGuru = teacherChoiceBox.getSelectionModel().getSelectedItem();
         TahunAjaran selectedTahunAjaran = schoolYearScheduleComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = semesterScheduleComboBox.getSelectionModel().getSelectedItem(); // NEW: Ambil semester
+        // String selectedSemester = semesterScheduleComboBox.getSelectionModel().getSelectedItem(); // DIHAPUS: Ambil semester
 
         if (hari == null || startTimeStr.isEmpty() || endTimeStr.isEmpty() || selectedMapel == null ||
-                selectedKelas == null || selectedGuru == null || selectedTahunAjaran == null || selectedSemester == null) {
+                selectedKelas == null || selectedGuru == null || selectedTahunAjaran == null) { // DIHAPUS: || selectedSemester == null
             showAlert(Alert.AlertType.ERROR, "Input Error", "Semua field jadwal harus diisi.");
             return;
         }
@@ -1324,8 +1324,11 @@ public class AdminController implements Initializable {
                 return;
             }
 
-            // UPDATED: Teruskan nilai semester ke constructor JadwalKelas
-            JadwalKelas newJadwal = new JadwalKelas(0, hari, jamMulai, jamSelesai, selectedKelas.getIdKelas(), selectedMapel.getIdMapel(), selectedGuru.getNip(), selectedSemester);
+            // UPDATED: Teruskan nilai semester ke constructor JadwalKelas (parameter semester DIHAPUS)
+            JadwalKelas newJadwal = new JadwalKelas(0, hari, jamMulai, jamSelesai,
+                    selectedKelas.getIdKelas(),
+                    selectedMapel.getIdMapel(),
+                    selectedGuru.getNip()); // DIHAPUS: , selectedSemester
 
             if (jadwalKelasDao.addJadwalKelas(newJadwal)) {
                 showAlert(Alert.AlertType.INFORMATION, "Sukses", "Jadwal berhasil ditambahkan!");
@@ -1338,6 +1341,7 @@ public class AdminController implements Initializable {
         } catch (DateTimeParseException e) {
             showAlert(Alert.AlertType.ERROR, "Format Waktu Salah", "Format waktu harus HH:MM (contoh: 08:00).");
         }
+
 
 //        String hari = dayChoiceBox.getSelectionModel().getSelectedItem();
 //        String startTimeStr = startTimeField.getText();
@@ -1521,14 +1525,14 @@ public class AdminController implements Initializable {
         Siswa selectedStudent = studentsToAssignTable.getSelectionModel().getSelectedItem();
         Kelas selectedClass = classAssignComboBox.getSelectionModel().getSelectedItem();
         TahunAjaran selectedTahunAjaran = schoolYearAssignComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = semesterAssignComboBox.getSelectionModel().getSelectedItem();
+        //String selectedSemester = semesterAssignComboBox.getSelectionModel().getSelectedItem();
 
-        if (selectedStudent == null || selectedClass == null || selectedTahunAjaran == null || selectedSemester == null) {
-            showAlert(Alert.AlertType.ERROR, "Input Error", "Pilih siswa, kelas, tahun ajaran, dan semester.");
+        if (selectedStudent == null || selectedClass == null || selectedTahunAjaran == null ) {//|| selectedSemester == null
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Pilih siswa, kelas, tahun ajaran");
             return;
         }
 
-        if (siswaDao.assignStudentToClass(selectedStudent.getNis(), selectedClass.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran(), selectedSemester)) {
+        if (siswaDao.assignStudentToClass(selectedStudent.getNis(), selectedClass.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran())) {//, selectedSemester
             showAlert(Alert.AlertType.INFORMATION, "Sukses", "Siswa berhasil ditugaskan ke kelas!");
             loadAllStudents(); // Refresh all student data
             loadStudentsInSelectedClass(); // Refresh students in selected class if any is chosen
@@ -1580,9 +1584,9 @@ public class AdminController implements Initializable {
         LocalDate tanggalMulai = agendaStartDatePicker.getValue();
         LocalDate tanggalSelesai = agendaEndDatePicker.getValue();
         TahunAjaran selectedTahunAjaran = schoolYearAgendaAddComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = semesterAgendaAddComboBox.getSelectionModel().getSelectedItem();
+        //String selectedSemester = semesterAgendaAddComboBox.getSelectionModel().getSelectedItem();
 
-        if (judul.isEmpty() || tanggalMulai == null || tanggalSelesai == null || selectedTahunAjaran == null || selectedSemester == null) {
+        if (judul.isEmpty() || tanggalMulai == null || tanggalSelesai == null || selectedTahunAjaran == null ) {//|| selectedSemester == null
             showAlert(Alert.AlertType.ERROR, "Input Error", "Semua field agenda sekolah harus diisi.");
             return;
         }

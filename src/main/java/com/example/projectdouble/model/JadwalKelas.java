@@ -11,7 +11,7 @@ public class JadwalKelas {
     private int idKelas;
     private int idMapel;
     private String nipGuru;
-    private String semester; // NEW: Kolom semester
+    //private String semester; // NEW: Kolom semester
 
     // Tambahan untuk tampilan di tabel (bukan bagian dari kolom DB jadwal_kelas kecuali semester)
     private String namaMapel;
@@ -20,7 +20,7 @@ public class JadwalKelas {
     private String namaGuru;
 
     // Constructor untuk data dari database (tanpa detail terkait) - Ini mungkin tidak lagi banyak digunakan
-    public JadwalKelas(int idJadwalKelas, int idKelas, int idMapel, String nipGuru, String hari, LocalTime jamMulai, LocalTime jamSelesai, String semester) {
+    public JadwalKelas(int idJadwalKelas, int idKelas, int idMapel, String nipGuru, String hari, LocalTime jamMulai, LocalTime jamSelesai) {//, String semester
         this.idJadwalKelas = idJadwalKelas;
         this.idKelas = idKelas;
         this.idMapel = idMapel;
@@ -28,12 +28,12 @@ public class JadwalKelas {
         this.hari = hari;
         this.jamMulai = jamMulai;
         this.jamSelesai = jamSelesai;
-        this.semester = semester;
+        //this.semester = semester;
     }
 
     // Constructor baru untuk data yang lebih lengkap (misalnya dari JOIN query)
     public JadwalKelas(int idJadwalKelas, String hari, LocalTime jamMulai, LocalTime jamSelesai,
-                       String namaMapel, String namaKelas, String tahunAjaranLengkap, String semester, String namaGuru) {
+                       String namaMapel, String namaKelas, String tahunAjaranLengkap, String namaGuru) {//, String semester
         this.idJadwalKelas = idJadwalKelas;
         this.hari = hari;
         this.jamMulai = jamMulai;
@@ -41,14 +41,14 @@ public class JadwalKelas {
         this.namaMapel = namaMapel;
         this.namaKelas = namaKelas;
         this.tahunAjaranLengkap = tahunAjaranLengkap;
-        this.semester = semester; // Mengisi semester dari hasil join
+        //this.semester = semester; // Mengisi semester dari hasil join
         this.namaGuru = namaGuru;
     }
 
 
     // Constructor for adding new schedule (if the order of arguments is like this)
     // Updated to include semester
-    public JadwalKelas(int idJadwalKelas, String hari, LocalTime jamMulai, LocalTime jamSelesai, int idKelas, int idMapel, String nipGuru, String semester) {
+    public JadwalKelas(int idJadwalKelas, String hari, LocalTime jamMulai, LocalTime jamSelesai, int idKelas, int idMapel, String nipGuru) {//, String semester
         this.idJadwalKelas = idJadwalKelas;
         this.hari = hari;
         this.jamMulai = jamMulai;
@@ -56,7 +56,7 @@ public class JadwalKelas {
         this.idKelas = idKelas;
         this.idMapel = idMapel;
         this.nipGuru = nipGuru;
-        this.semester = semester; // Mengisi semester dari input
+        //this.semester = semester; // Mengisi semester dari input
     }
 
     // Getters
@@ -88,9 +88,9 @@ public class JadwalKelas {
         return nipGuru;
     }
 
-    public String getSemester() { // NEW: Getter untuk semester
-        return semester;
-    }
+//    public String getSemester() { // NEW: Getter untuk semester
+//        return semester;
+//    }
 
     // Getters untuk properti tampilan
     public String getNamaMapel() {
@@ -160,9 +160,9 @@ public class JadwalKelas {
         this.nipGuru = nipGuru;
     }
 
-    public void setSemester(String semester) { // NEW: Setter untuk semester
-        this.semester = semester;
-    }
+//    public void setSemester(String semester) { // NEW: Setter untuk semester
+//        this.semester = semester;
+//    }
 
     public void setNamaMapel(String namaMapel) {
         this.namaMapel = namaMapel;

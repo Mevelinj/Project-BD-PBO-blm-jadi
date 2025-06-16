@@ -20,7 +20,7 @@ public class Siswa {
     private String namaKelas; // Untuk tampilan
     private Integer idTahunAjaran; // Bisa null jika belum di-assign ke kelas
     private String tahunAjaranLengkap; // Untuk tampilan (misal: "2023/2024 Ganjil")
-    private String semester; // Bisa null jika belum di-assign ke kelas
+    //private String semester; // Bisa null jika belum di-assign ke kelas
 
 
     // Konstruktor untuk data siswa dasar (saat input awal)
@@ -38,12 +38,12 @@ public class Siswa {
         this.namaKelas = null;
         this.idTahunAjaran = null;
         this.tahunAjaranLengkap = null;
-        this.semester = null;
+        //this.semester = null;
     }
 
     // Konstruktor lengkap dengan semua field, termasuk FK dan user info
     public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat,
-                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap, String semester,
+                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap, // String semester,
                  Integer idUser, String usernameUser, String passwordUser) {
         this.nis = nis;
         this.nama = nama;
@@ -55,7 +55,7 @@ public class Siswa {
         this.namaKelas = namaKelas;
         this.idTahunAjaran = idTahunAjaran;
         this.tahunAjaranLengkap = tahunAjaranLengkap;
-        this.semester = semester;
+        //this.semester = semester;
         this.idUser = idUser;
         this.usernameUser = usernameUser;
         this.passwordUser = passwordUser;
@@ -76,7 +76,7 @@ public class Siswa {
 
     // Konstruktor untuk DAO yang hanya mengambil data SISWA dan KELAS
     public Siswa(String nis, String nama, String jenisKelamin, String tempatLahir, LocalDate tanggalLahir, String alamat,
-                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap, String semester) {
+                 Integer idKelas, String namaKelas, Integer idTahunAjaran, String tahunAjaranLengkap) {// String semester
         this.nis = nis;
         this.nama = nama;
         this.jenisKelamin = jenisKelamin;
@@ -87,7 +87,7 @@ public class Siswa {
         this.namaKelas = namaKelas;
         this.idTahunAjaran = idTahunAjaran;
         this.tahunAjaranLengkap = tahunAjaranLengkap;
-        this.semester = semester;
+        //this.semester = semester;
     }
 
 
@@ -196,13 +196,13 @@ public class Siswa {
         this.tahunAjaranLengkap = tahunAjaranLengkap;
     }
 
-    public String getSemester() {
-        return semester;
-    }
+//    public String getSemester() {
+//        return semester;
+//    }
 
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+//    public void setSemester(String semester) {
+//        this.semester = semester;
+//    }
 
     @Override
     public String toString() {

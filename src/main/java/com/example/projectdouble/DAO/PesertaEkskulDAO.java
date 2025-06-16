@@ -334,7 +334,7 @@ public class PesertaEkskulDAO {
                         rs.getString("nama_kelas"),
                         (Integer) rs.getObject("id_tahun_ajaran"),
                         rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester"),
+                        //rs.getString("semester"),
                         (Integer) rs.getObject("id_user"),
                         rs.getString("username_user"),
                         rs.getString("password_user")

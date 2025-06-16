@@ -119,7 +119,9 @@ public class SiswaDAO {
 //            e.printStackTrace();
 //            return false;
 //        }
-        String sql = "UPDATE siswa SET id_kelas = NULL, id_tahun_ajaran = NULL, semester = NULL WHERE nis = ?";
+//        String sql = "UPDATE siswa SET id_kelas = NULL, id_tahun_ajaran = NULL, semester = NULL WHERE nis = ?";
+        String sql = "UPDATE siswa SET id_kelas = NULL, id_tahun_ajaran = NULL";
+
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nis);
@@ -182,7 +184,7 @@ public class SiswaDAO {
 
         String sql = "SELECT s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, " +
                 "u.id_user, u.username AS username_user, u.password AS password_user, " +
-                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap, s.semester " +
+                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap  " + //s.semester dihapus
                 "FROM siswa s " +
                 "LEFT JOIN users u ON s.id_user = u.id_user " +
                 "LEFT JOIN kelas k ON s.id_kelas = k.id_kelas " +
@@ -204,7 +206,7 @@ public class SiswaDAO {
                         rs.getString("nama_kelas"),
                         (Integer) rs.getObject("id_tahun_ajaran"),
                         rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester"),
+                        //rs.getString("semester"),
                         (Integer) rs.getObject("id_user"),
                         rs.getString("username_user"),
                         rs.getString("password_user")
@@ -265,8 +267,8 @@ public class SiswaDAO {
         List<Siswa> siswaList = new ArrayList<>();
         String sql = "SELECT s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, " +
                 "u.id_user, u.username AS username_user, u.password AS password_user, " +
-                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap, s.semester " +
-                "FROM siswa s " +
+                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap" + //, s.semester dihapus
+        "FROM siswa s " +
                 "LEFT JOIN users u ON s.id_user = u.id_user " +
                 "LEFT JOIN kelas k ON s.id_kelas = k.id_kelas " +
                 "LEFT JOIN tahun_ajaran ta ON s.id_tahun_ajaran = ta.id_tahun_ajaran";
@@ -285,7 +287,7 @@ public class SiswaDAO {
                         rs.getString("nama_kelas"),
                         (Integer) rs.getObject("id_tahun_ajaran"),
                         rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester"),
+                        //rs.getString("semester"),
                         (Integer) rs.getObject("id_user"),
                         rs.getString("username_user"),
                         rs.getString("password_user")
@@ -350,8 +352,8 @@ public class SiswaDAO {
         List<Siswa> siswaList = new ArrayList<>();
         String sql = "SELECT s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, " +
                 "u.id_user, u.username AS username_user, u.password AS password_user, " +
-                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap, s.semester " +
-                "FROM siswa s " +
+                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap" + //, s.semester dihapus
+        "FROM siswa s " +
                 "LEFT JOIN users u ON s.id_user = u.id_user " +
                 "LEFT JOIN kelas k ON s.id_kelas = k.id_kelas " +
                 "LEFT JOIN tahun_ajaran ta ON s.id_tahun_ajaran = ta.id_tahun_ajaran " +
@@ -373,7 +375,7 @@ public class SiswaDAO {
                         rs.getString("nama_kelas"),
                         (Integer) rs.getObject("id_tahun_ajaran"),
                         rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester"),
+                        //rs.getString("semester"),
                         (Integer) rs.getObject("id_user"),
                         rs.getString("username_user"),
                         rs.getString("password_user")
@@ -469,7 +471,7 @@ public class SiswaDAO {
      * @param semester Semester.
      * @return true jika berhasil, false jika gagal.
      */
-    public boolean assignStudentToClass(String nis, int idKelas, int idTahunAjaran, String semester) {
+    public boolean assignStudentToClass(String nis, int idKelas, int idTahunAjaran) { // , String semester dihapus
         // ASUMSI: ada tabel 'kelas_siswa' untuk menyimpan assignment siswa ke kelas
         // Jika DDL Anda tidak memiliki tabel 'kelas_siswa', ini akan gagal.
 //        String sql = "INSERT INTO kelas_siswa (nis, id_kelas, id_tahun_ajaran, semester) VALUES (?, ?, ?, ?) ON CONFLICT (nis) DO UPDATE SET id_kelas = EXCLUDED.id_kelas, id_tahun_ajaran = EXCLUDED.id_tahun_ajaran, semester = EXCLUDED.semester";
@@ -488,13 +490,13 @@ public class SiswaDAO {
 //        }
 
         // Langsung update kolom di tabel siswa
-        String sql = "UPDATE siswa SET id_kelas = ?, id_tahun_ajaran = ?, semester = ? WHERE nis = ?";
+        String sql = "UPDATE siswa SET id_kelas = ?, id_tahun_ajaran = ?"; //, semester = ? WHERE nis = ? dihapus
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idKelas);
             stmt.setInt(2, idTahunAjaran);
-            stmt.setString(3, semester);
-            stmt.setString(4, nis);
+            //stmt.setString(3, semester);
+            stmt.setString(3, nis);
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -556,12 +558,12 @@ public class SiswaDAO {
         List<Siswa> siswaList = new ArrayList<>();
         String sql = "SELECT s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, " +
                 "u.id_user, u.username AS username_user, u.password AS password_user, " +
-                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap, s.semester " +
+                "s.id_kelas, k.nama_kelas, s.id_tahun_ajaran, (ta.tahun_mulai || '/' || ta.tahun_selesai) AS tahun_ajaran_lengkap " + // , s.semester
                 "FROM siswa s " +
                 "LEFT JOIN users u ON s.id_user = u.id_user " +
                 "LEFT JOIN kelas k ON s.id_kelas = k.id_kelas " +
                 "LEFT JOIN tahun_ajaran ta ON s.id_tahun_ajaran = ta.id_tahun_ajaran " +
-                "WHERE s.id_kelas = ? AND s.id_tahun_ajaran = ? AND s.semester = ?";
+                "WHERE s.id_kelas = ? AND s.id_tahun_ajaran = ? "; //AND s.semester = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idKelas);
@@ -579,7 +581,7 @@ public class SiswaDAO {
                         rs.getString("nama_kelas"),
                         (Integer) rs.getObject("id_tahun_ajaran"),
                         rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester"),
+                        //rs.getString("semester"),
                         (Integer) rs.getObject("id_user"),
                         rs.getString("username_user"),
                         rs.getString("password_user")
