@@ -880,13 +880,14 @@ public class AdminController implements Initializable {
     private void loadStudentsInSelectedClass() {
         Kelas selectedKelas = classStudentsInSelectedClassComboBox.getSelectionModel().getSelectedItem();
         TahunAjaran selectedTahunAjaran = schoolYearStudentsInSelectedClassComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = "Ganjil";
 
         if (selectedKelas != null && selectedTahunAjaran != null) {
+            // Fetch students based only on the selected class and school year
             ObservableList<Siswa> students = FXCollections.observableArrayList(
-                    siswaDao.getStudentsInClass(selectedKelas.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran(), selectedSemester));
+                    siswaDao.getStudentsInClass(selectedKelas.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran()));
             studentsInSelectedClassTable.setItems(students);
         } else {
+            // Clear the table if class or school year is not selected
             studentsInSelectedClassTable.setItems(FXCollections.observableArrayList());
         }
     }
@@ -1590,7 +1591,7 @@ public class AdminController implements Initializable {
             return;
         }
 
-        AgendaSekolah newAgenda = new AgendaSekolah(0, judul, "", tanggalMulai, tanggalSelesai, selectedTahunAjaran.getIdTahunAjaran(), selectedSemester); // deskripsi bisa kosong atau diambil dari judul
+        AgendaSekolah newAgenda = new AgendaSekolah(0, judul, "", tanggalMulai, tanggalSelesai, selectedTahunAjaran.getIdTahunAjaran()); // deskripsi bisa kosong atau diambil dari judul
         if (agendaSekolahDao.addAgendaSekolah(newAgenda)) {
             showAlert(Alert.AlertType.INFORMATION, "Sukses", "Agenda sekolah berhasil ditambahkan!");
             clearAddSchoolAgendaFields();
