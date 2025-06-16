@@ -11,7 +11,6 @@ public class Kelas {
     private String namaWaliKelas; // Untuk memudahkan tampilan
     private int idTahunAjaran; // Kunci asing ke TahunAjaran
     private String tahunAjaranLengkap; // Untuk memudahkan tampilan (misal: "2023/2024")
-    private String semester; // 'Ganjil' atau 'Genap'
 
     public Kelas(int idKelas, String namaKelas, String tingkat, String nipWaliKelas, int idTahunAjaran) {
         this.idKelas = idKelas;
@@ -31,16 +30,15 @@ public class Kelas {
         this.tahunAjaranLengkap = tahunAjaranLengkap;
     }
 
-    public Kelas(int idKelas, String namaKelas, String tingkat, String nipWaliKelas, String namaWaliKelas, int idTahunAjaran, String tahunAjaranLengkap, String semester) {
-        this.idKelas = idKelas;
-        this.namaKelas = namaKelas;
-        this.tingkat = tingkat;
-        this.nipWaliKelas = nipWaliKelas;
-        this.namaWaliKelas = namaWaliKelas;
-        this.idTahunAjaran = idTahunAjaran;
-        this.tahunAjaranLengkap = tahunAjaranLengkap;
-        this.semester = semester;
-    }
+//    public Kelas(int idKelas, String namaKelas, String tingkat, String nipWaliKelas, String namaWaliKelas, int idTahunAjaran, String tahunAjaranLengkap, String semester) {
+//        this.idKelas = idKelas;
+//        this.namaKelas = namaKelas;
+//        this.tingkat = tingkat;
+//        this.nipWaliKelas = nipWaliKelas;
+//        this.namaWaliKelas = namaWaliKelas;
+//        this.idTahunAjaran = idTahunAjaran;
+//        this.tahunAjaranLengkap = tahunAjaranLengkap;
+//    }
 
 
     // Getters and Setters
@@ -100,13 +98,13 @@ public class Kelas {
         this.tahunAjaranLengkap = tahunAjaranLengkap;
     }
 
-    public String getSemester() {
-        return semester;
-    }
+//    public String getSemester() {
+//        return semester;
+//    }
 
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+//    public void setSemester(String semester) {
+//        this.semester = semester;
+//    }
 
     @Override
     public String toString() {

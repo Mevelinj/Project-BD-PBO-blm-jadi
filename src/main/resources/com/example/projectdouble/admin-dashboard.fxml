@@ -307,7 +307,6 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
                                         <Label text="DAY" />
@@ -324,8 +323,7 @@
                                         <TextField fx:id="endTimeField" prefHeight="16.0" prefWidth="302.0" promptText="e.g. 09:10" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <Label text="SCHOOL YEAR" GridPane.rowIndex="6" />
                                         <ComboBox fx:id="schoolYearScheduleComboBox" prefHeight="25.0" prefWidth="337.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                        <ComboBox fx:id="semesterScheduleComboBox" prefHeight="25.0" prefWidth="339.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                        <Button fx:id="addScheduleButton" mnemonicParsing="false" onAction="#handleAddSchedule" text="Add Schedule" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                        <Button fx:id="addScheduleButton" mnemonicParsing="false" onAction="#handleAddSchedule" text="Add Schedule" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
                                 </GridPane>
                         <Label layoutX="662.0" layoutY="12.0" text="SCHEDULE">
@@ -501,7 +499,6 @@
                                         <Label text="END" GridPane.rowIndex="2" />
                                         <Label text="SCHOOL YEAR" GridPane.rowIndex="3" />
                                         <TextField fx:id="agendaContentField" GridPane.columnIndex="1" />
-                                        <ComboBox fx:id="semesterAgendaAddComboBox" prefHeight="25.0" prefWidth="267.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                         <ComboBox fx:id="schoolYearAgendaAddComboBox" prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <DatePicker fx:id="agendaStartDatePicker" prefHeight="25.0" prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <DatePicker fx:id="agendaEndDatePicker" prefHeight="25.0" prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -519,7 +516,6 @@
                                     </rowConstraints>
                                     <children>
                                         <Label text="SCHOOL YEAR" />
-                                        <ComboBox fx:id="semesterAgendaViewComboBox" prefHeight="25.0" prefWidth="312.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <ComboBox fx:id="schoolYearAgendaViewComboBox" prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" />
                                     </children>
                                 </GridPane>
@@ -601,21 +597,19 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
                                         <Label text="CLASS" />
                                         <Label text="SCHOOL YEAR" GridPane.rowIndex="1" />
-                                        <Label text="LEVEL" GridPane.rowIndex="4" />
+                                        <Label text="LEVEL" GridPane.rowIndex="3" />
                                         <ComboBox fx:id="classInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="237.0" GridPane.columnIndex="1" />
                                         <ComboBox fx:id="schoolYearInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="238.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <ComboBox fx:id="semesterInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="239.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <ComboBox fx:id="extracurricularInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                        <ComboBox fx:id="levelInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="281.0" promptText="Siaga/Penggalang" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                        <ComboBox fx:id="studentInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="283.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                        <Button fx:id="addStudentToExtracurricularButton" mnemonicParsing="false" onAction="#handleAddStudentToExtracurricular" text="Add Student" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                        <Label text="EXTRACURRICULAR" GridPane.rowIndex="3" />
-                                        <Label text="STUDENT" GridPane.rowIndex="5" />
+                                        <ComboBox fx:id="extracurricularInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <ComboBox fx:id="levelInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="281.0" promptText="Siaga/Penggalang" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <ComboBox fx:id="studentInputSiswaEkskulComboBox" prefHeight="25.0" prefWidth="283.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                        <Button fx:id="addStudentToExtracurricularButton" mnemonicParsing="false" onAction="#handleAddStudentToExtracurricular" text="Add Student" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                        <Label text="EXTRACURRICULAR" GridPane.rowIndex="2" />
+                                        <Label text="STUDENT" GridPane.rowIndex="4" />
                                     </children>
                                 </GridPane>
                                 <TableView fx:id="studentsInExtracurricularTable" layoutX="461.0" layoutY="243.0" prefHeight="248.0" prefWidth="448.0">

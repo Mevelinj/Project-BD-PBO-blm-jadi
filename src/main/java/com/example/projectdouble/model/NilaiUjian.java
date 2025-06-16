@@ -6,7 +6,7 @@ public class NilaiUjian {
     private int idNilaiUjian;
     private String jenisUjian;
     private BigDecimal nilai; // Menggunakan BigDecimal untuk NUMERIC
-    private String semester;
+    //private String semester;
     private int idMapel;
     private String nis;
 
@@ -14,21 +14,21 @@ public class NilaiUjian {
     private String namaMapel;
     private String namaSiswa;
 
-    public NilaiUjian(int idNilaiUjian, String jenisUjian, BigDecimal nilai, String semester, int idMapel, String nis) {
+    public NilaiUjian(int idNilaiUjian, String jenisUjian, BigDecimal nilai, int idMapel, String nis) {
         this.idNilaiUjian = idNilaiUjian;
         this.jenisUjian = jenisUjian;
         this.nilai = nilai;
-        this.semester = semester;
+        //this.semester = semester;
         this.idMapel = idMapel;
         this.nis = nis;
     }
 
     // Constructor dengan nama-nama terkait
-    public NilaiUjian(int idNilaiUjian, String jenisUjian, BigDecimal nilai, String semester, int idMapel, String nis, String namaMapel, String namaSiswa) {
+    public NilaiUjian(int idNilaiUjian, String jenisUjian, BigDecimal nilai, int idMapel, String nis, String namaMapel, String namaSiswa) {
         this.idNilaiUjian = idNilaiUjian;
         this.jenisUjian = jenisUjian;
         this.nilai = nilai;
-        this.semester = semester;
+        //this.semester = semester;
         this.idMapel = idMapel;
         this.nis = nis;
         this.namaMapel = namaMapel;
@@ -60,13 +60,13 @@ public class NilaiUjian {
         this.nilai = nilai;
     }
 
-    public String getSemester() {
-        return semester;
-    }
+    //public String getSemester() {
+    //    return semester;
+    //}
 
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+//    public void setSemester(String semester) {
+//        this.semester = semester;
+//    }
 
     public int getIdMapel() {
         return idMapel;

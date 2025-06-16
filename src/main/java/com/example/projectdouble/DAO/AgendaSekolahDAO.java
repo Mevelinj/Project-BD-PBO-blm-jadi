@@ -15,21 +15,24 @@ public class AgendaSekolahDAO {
      * @return true jika berhasil, false jika gagal.
      */
     public boolean addAgendaSekolah(AgendaSekolah agenda) {
-        // Menggunakan nama tabel lowercase 'agenda_sekolah'
-        String sql = "INSERT INTO agenda_sekolah (judul, deskripsi, tanggal_mulai, tanggal_selesai, id_tahun_ajaran, semester) VALUES (?, ?, ?, ?, ?, ?) RETURNING id_agenda_sekolah";
+        // Updated SQL: Removed 'semester' from column list and values list
+        String sql = "INSERT INTO agenda_sekolah (judul, deskripsi, tanggal_mulai, tanggal_selesai, id_tahun_ajaran) VALUES (?, ?, ?, ?, ?) RETURNING id_agenda_sekolah";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, agenda.getJudul());
             stmt.setString(2, agenda.getDeskripsi());
             stmt.setDate(3, Date.valueOf(agenda.getTanggalMulai())); // Konversi LocalDate ke java.sql.Date
             stmt.setDate(4, Date.valueOf(agenda.getTanggalSelesai())); // Konversi LocalDate ke java.sql.Date
-            // Menangani idTahunAjaran dan semester yang bisa null di model AgendaSekolah
+
+            // Handling idTahunAjaran which can be null (assuming it's an Integer in AgendaSekolah model)
             if (agenda.getIdTahunAjaran() != null) {
                 stmt.setInt(5, agenda.getIdTahunAjaran());
             } else {
                 stmt.setNull(5, java.sql.Types.INTEGER);
             }
-            stmt.setString(6, agenda.getSemester()); // String bisa null
+
+            // Removed stmt.setString(6, agenda.getSemester()); as 'semester' is no longer in the SQL
+
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -66,8 +69,8 @@ public class AgendaSekolahDAO {
                         rs.getString("deskripsi"),
                         rs.getDate("tanggal_mulai").toLocalDate(),
                         rs.getDate("tanggal_selesai").toLocalDate(),
-                        (Integer) rs.getObject("id_tahun_ajaran"), // Bisa null
-                        rs.getString("semester") // Bisa null
+                        (Integer) rs.getObject("id_tahun_ajaran") // Bisa null
+                        //rs.getString("semester") // Bisa null
                 ));
             }
         } catch (SQLException e) {
@@ -96,8 +99,8 @@ public class AgendaSekolahDAO {
                         rs.getString("deskripsi"),
                         rs.getDate("tanggal_mulai").toLocalDate(),
                         rs.getDate("tanggal_selesai").toLocalDate(),
-                        (Integer) rs.getObject("id_tahun_ajaran"),
-                        rs.getString("semester")
+                        (Integer) rs.getObject("id_tahun_ajaran")
+                        //rs.getString("semester")
                 );
             }
         } catch (SQLException e) {
@@ -110,18 +113,19 @@ public class AgendaSekolahDAO {
     /**
      * Mengambil agenda sekolah berdasarkan tahun ajaran dan semester.
      * @param idTahunAjaran ID Tahun Ajaran.
-     * @param semester Semester (Ganjil/Genap).
+//     * @param semester Semester (Ganjil/Genap).
      * @return List objek AgendaSekolah.
      */
-    public List<AgendaSekolah> getAgendaByTahunAjaranAndSemester(int idTahunAjaran, String semester) {
+    public List<AgendaSekolah> getAgendaByTahunAjaran(int idTahunAjaran) {
         List<AgendaSekolah> agendaList = new ArrayList<>();
-        // Menggunakan nama tabel lowercase 'agenda_sekolah'
-        String sql = "SELECT id_agenda_sekolah, judul, deskripsi, tanggal_mulai, tanggal_selesai, id_tahun_ajaran, semester FROM agenda_sekolah WHERE id_tahun_ajaran = ? AND semester = ? ORDER BY tanggal_mulai DESC";
+        String sql = "SELECT id_agenda_sekolah, judul, deskripsi, tanggal_mulai, tanggal_selesai, id_tahun_ajaran FROM agenda_sekolah WHERE id_tahun_ajaran = ? ORDER BY tanggal_mulai DESC";
+
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, idTahunAjaran);
-            stmt.setString(2, semester);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 agendaList.add(new AgendaSekolah(
                         rs.getInt("id_agenda_sekolah"),
@@ -129,16 +133,16 @@ public class AgendaSekolahDAO {
                         rs.getString("deskripsi"),
                         rs.getDate("tanggal_mulai").toLocalDate(),
                         rs.getDate("tanggal_selesai").toLocalDate(),
-                        (Integer) rs.getObject("id_tahun_ajaran"),
-                        rs.getString("semester")
+                        (Integer) rs.getObject("id_tahun_ajaran") // This is an Integer
                 ));
             }
         } catch (SQLException e) {
-            System.err.println("Error saat mengambil agenda sekolah berdasarkan tahun ajaran dan semester: " + e.getMessage());
+            System.err.println("Error saat mengambil agenda sekolah berdasarkan tahun ajaran: " + e.getMessage());
             e.printStackTrace();
         }
         return agendaList;
     }
+
 
     /**
      * Memperbarui data agenda sekolah di database.
@@ -146,21 +150,27 @@ public class AgendaSekolahDAO {
      * @return true jika berhasil, false jika gagal.
      */
     public boolean updateAgendaSekolah(AgendaSekolah agenda) {
-        // Menggunakan nama tabel lowercase 'agenda_sekolah'
-        String sql = "UPDATE agenda_sekolah SET judul = ?, deskripsi = ?, tanggal_mulai = ?, tanggal_selesai = ?, id_tahun_ajaran = ?, semester = ? WHERE id_agenda_sekolah = ?";
+        // Updated SQL: Removed 'semester = ?' from the SET clause
+        String sql = "UPDATE agenda_sekolah SET judul = ?, deskripsi = ?, tanggal_mulai = ?, tanggal_selesai = ?, id_tahun_ajaran = ? WHERE id_agenda_sekolah = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, agenda.getJudul());
             stmt.setString(2, agenda.getDeskripsi());
             stmt.setDate(3, Date.valueOf(agenda.getTanggalMulai()));
             stmt.setDate(4, Date.valueOf(agenda.getTanggalSelesai()));
+
+            // Handle idTahunAjaran which can be null (assuming it's an Integer in AgendaSekolah model)
             if (agenda.getIdTahunAjaran() != null) {
                 stmt.setInt(5, agenda.getIdTahunAjaran());
             } else {
                 stmt.setNull(5, java.sql.Types.INTEGER);
             }
-            stmt.setString(6, agenda.getSemester());
-            stmt.setInt(7, agenda.getIdAgendaSekolah());
+
+            // Removed stmt.setString(6, agenda.getSemester()); as 'semester' is no longer in the SQL
+
+            // id_agenda_sekolah is now at parameter index 6
+            stmt.setInt(6, agenda.getIdAgendaSekolah());
+
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

@@ -10,9 +10,9 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class DBConnect {
-    private static final String URL = "jdbc:postgresql://localhost:5432/projectakhir";
+    private static final String URL = "jdbc:postgresql://localhost:5432/ProjectSistemManajemenSekolah";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "brenda2811";
+    private static final String PASSWORD = "c14240179";
 
     public static Connection getConnection() {
         try {

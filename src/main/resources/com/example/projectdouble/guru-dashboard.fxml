@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -15,11 +13,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectdouble.controller.GuruController">
+<AnchorPane prefHeight="600.0" prefWidth="945.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectdouble.controller.GuruController">
     <children>
         <Label fx:id="welcome" layoutX="14.0">
             <font>
@@ -112,7 +109,7 @@
                                         <TextField fx:id="editBiodataEmailField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <TextField fx:id="editBiodataPhoneField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                         <ComboBox fx:id="editBiodataGenderCombo" prefHeight="25.0" prefWidth="264.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <Button fx:id="updateBiodataButton" onAction="#handleUpdateBiodataButtonAction" mnemonicParsing="false" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                        <Button fx:id="updateBiodataButton" mnemonicParsing="false" onAction="#handleUpdateBiodataButtonAction" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     </children>
                                 </GridPane>
                                 <Label layoutX="14.0" layoutY="251.0" text="EDIT PASSWORD">
@@ -138,7 +135,7 @@
                                         <TextField fx:id="editPasswordUsernameField" editable="false" promptText="NIP" GridPane.columnIndex="1" />
                                         <TextField fx:id="editPasswordOldPassField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <TextField fx:id="editPasswordNewPassField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <Button fx:id="changePasswordButton" onAction="#handleChangePasswordButtonAction" mnemonicParsing="false" text="Change Password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#handleChangePasswordButtonAction" text="Change Password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
                                 </GridPane>
                             </children>
@@ -203,9 +200,8 @@
                                         <ComboBox fx:id="inputScoreExamTypeCombo" prefHeight="25.0" prefWidth="258.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <ComboBox fx:id="inputScoreStudentCombo" prefHeight="25.0" prefWidth="229.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <ComboBox fx:id="inputScoreSchoolYearCombo" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                        <ComboBox fx:id="inputScoreSemesterCombo" prefHeight="25.0" prefWidth="264.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                         <TextField fx:id="inputScoreField" promptText="0-100" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                        <Button fx:id="inputScoreSubmitButton" onAction="#handleSubmitScoreButtonAction" mnemonicParsing="false" text="Submit Data" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <Button fx:id="inputScoreSubmitButton" mnemonicParsing="false" onAction="#handleSubmitScoreButtonAction" text="Submit Data" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
                                 </GridPane>
                                 <TableView fx:id="existingScoreTable" layoutX="388.0" layoutY="80.0" prefHeight="406.0" prefWidth="523.0">
@@ -238,7 +234,7 @@
                                     <children>
                                         <Label text="CHANGE SCORE" />
                                         <TextField fx:id="editScoreField" promptText="0-100" GridPane.columnIndex="1" />
-                                        <Button fx:id="updateScoreButton" onAction="#handleUpdateScoreButtonAction" mnemonicParsing="false" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Button fx:id="updateScoreButton" mnemonicParsing="false" onAction="#handleUpdateScoreButtonAction" text="Update Data" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                 </GridPane>
                             </children>
@@ -274,11 +270,10 @@
                                         <ComboBox fx:id="assignmentClassCombo" prefHeight="25.0" prefWidth="256.0" GridPane.columnIndex="1" />
                                         <ComboBox fx:id="assignmentSubjectCombo" prefHeight="25.0" prefWidth="226.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <ComboBox fx:id="assignmentSchoolYearCombo" prefHeight="25.0" prefWidth="279.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <ComboBox fx:id="assignmentSemesterCombo" prefHeight="25.0" prefWidth="241.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <TextField fx:id="assignmentTitleField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                         <TextArea fx:id="assignmentDescriptionArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                         <DatePicker fx:id="assignmentDeadlinePicker" prefHeight="25.0" prefWidth="217.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                        <Button fx:id="addAssignmentButton" onAction="#handleAddAssignmentButtonAction" mnemonicParsing="false" text="Add Assignment" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <Button fx:id="addAssignmentButton" mnemonicParsing="false" onAction="#handleAddAssignmentButtonAction" text="Add Assignment" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
                                 </GridPane>
                                 <TableView fx:id="assignmentTable" layoutX="404.0" layoutY="14.0" prefHeight="479.0" prefWidth="501.0">
@@ -359,7 +354,7 @@
                                         <ComboBox fx:id="homeroomAttendanceStudentCombo" prefHeight="25.0" prefWidth="400.0" GridPane.columnIndex="1" />
                                         <ComboBox fx:id="homeroomAttendanceStatusCombo" prefHeight="25.0" prefWidth="403.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <DatePicker fx:id="homeroomAttendanceDatePicker" prefHeight="25.0" prefWidth="398.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                        <Button fx:id="recordAttendanceButton" onAction="#handleRecordAttendanceButtonAction" mnemonicParsing="false" text="Record Attendance" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Button fx:id="recordAttendanceButton" mnemonicParsing="false" onAction="#handleRecordAttendanceButtonAction" text="Record Attendance" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                     </children>
                                 </GridPane>
                                 <TableView fx:id="homeroomAttendanceTable" layoutX="442.0" layoutY="200.0" prefHeight="290.0" prefWidth="467.0">
@@ -392,7 +387,7 @@
                                     <children>
                                         <Label text="Select Student" />
                                         <ComboBox fx:id="homeroomRaporStudentCombo" prefHeight="25.0" prefWidth="270.0" GridPane.columnIndex="1" />
-                                        <Button fx:id="homeroomPrintRaporButton" onAction="#handlePrintRaporButtonAction" mnemonicParsing="false" text="Print" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Button fx:id="homeroomPrintRaporButton" mnemonicParsing="false" onAction="#handlePrintRaporButtonAction" text="Print" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
                                 </GridPane>
                             </children>
@@ -419,7 +414,6 @@
                                     </rowConstraints>
                                     <children>
                                         <Label text="SCHOOL YEAR" />
-                                        <ComboBox fx:id="agendaSemesterCombo" prefHeight="25.0" prefWidth="312.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                         <ComboBox fx:id="agendaSchoolYearCombo" prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" />
                                     </children>
                                 </GridPane>
@@ -465,7 +459,6 @@
                                         <Label text="SCHOOL YEAR" GridPane.rowIndex="2" />
                                         <ComboBox fx:id="mentorExtraSelectCombo" prefHeight="25.0" prefWidth="253.0" GridPane.columnIndex="1" />
                                         <ComboBox fx:id="mentorSchoolYearCombo" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <ComboBox fx:id="mentorSemesterCombo" prefHeight="25.0" prefWidth="264.0" promptText="GANJIL/GENAP" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                         <Label fx:id="mentorLevelLabel" layoutX="10.0" layoutY="14.0" text="LEVEL" GridPane.rowIndex="1" />
                                         <ComboBox fx:id="mentorLevelSelectCombo" layoutX="127.0" layoutY="10.0" prefHeight="25.0" prefWidth="253.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     </children>
@@ -484,6 +477,6 @@
                 </Tab>
             </tabs>
         </TabPane>
-        <Button fx:id="logout" onAction="#handleLogoutButtonAction" layoutX="879.0" layoutY="10.0" mnemonicParsing="false" text="Logout" />
+        <Button fx:id="logout" layoutX="879.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleLogoutButtonAction" text="Logout" />
     </children>
 </AnchorPane>

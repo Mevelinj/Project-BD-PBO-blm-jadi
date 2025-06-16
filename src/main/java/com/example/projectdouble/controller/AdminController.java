@@ -852,27 +852,26 @@ public class AdminController implements Initializable {
     private void loadStudentsForExtracurricularAssignment() {
         Kelas selectedClass = classInputSiswaEkskulComboBox.getSelectionModel().getSelectedItem();
         TahunAjaran selectedTahunAjaran = schoolYearInputSiswaEkskulComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = semesterInputSiswaEkskulComboBox.getSelectionModel().getSelectedItem();
 
-        if (selectedClass != null && selectedTahunAjaran != null && selectedSemester != null) {
-            // Memanggil DAO untuk mendapatkan siswa berdasarkan kelas, tahun ajaran, dan semester
+        if (selectedClass != null && selectedTahunAjaran != null) {
+            // Call DAO to get students based on class and school year
             ObservableList<Siswa> filteredStudents = FXCollections.observableArrayList(
-                    siswaDao.getStudentsInClass(selectedClass.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran(), selectedSemester));
+                    siswaDao.getStudentsInClass(selectedClass.getIdKelas(), selectedTahunAjaran.getIdTahunAjaran()));
             studentInputSiswaEkskulComboBox.setItems(filteredStudents);
         } else {
-            // Kosongkan ComboBox jika filter belum lengkap
+            // Clear the ComboBox if filters are not complete
             studentInputSiswaEkskulComboBox.setItems(FXCollections.observableArrayList());
         }
     }
 
     private void loadSchoolAgenda() {
         TahunAjaran selectedTahunAjaran = schoolYearAgendaViewComboBox.getSelectionModel().getSelectedItem();
-        String selectedSemester = semesterAgendaViewComboBox.getSelectionModel().getSelectedItem();
 
-        if (selectedTahunAjaran != null && selectedSemester != null) {
-            agendaList = FXCollections.observableArrayList(agendaSekolahDao.getAgendaByTahunAjaranAndSemester(selectedTahunAjaran.getIdTahunAjaran(), selectedSemester));
+        if (selectedTahunAjaran != null) {
+            // Load agenda items for the selected school year
+            agendaList = FXCollections.observableArrayList(agendaSekolahDao.getAgendaByTahunAjaran(selectedTahunAjaran.getIdTahunAjaran()));
         } else {
-            // Load all if no filter or handle error
+            // Load all agenda items if no school year is selected
             agendaList = FXCollections.observableArrayList(agendaSekolahDao.getAllAgendaSekolah());
         }
         agendaTable.setItems(agendaList);

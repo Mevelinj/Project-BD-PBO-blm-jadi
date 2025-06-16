@@ -10,31 +10,37 @@ public class AgendaSekolah {
     private LocalDate tanggalMulai;
     private LocalDate tanggalSelesai;
     private Integer idTahunAjaran; // Integer agar bisa null
-    private String semester;
+//    private String semester;
 
     // Untuk memudahkan tampilan
     private String tahunAjaranLengkap;
 
-    public AgendaSekolah(int idAgendaSekolah, String judul, String deskripsi, LocalDate tanggalMulai, LocalDate tanggalSelesai, Integer idTahunAjaran, String semester) {
-        this.idAgendaSekolah = idAgendaSekolah;
-        this.judul = judul;
-        this.deskripsi = deskripsi;
-        this.tanggalMulai = tanggalMulai;
-        this.tanggalSelesai = tanggalSelesai;
-        this.idTahunAjaran = idTahunAjaran;
-        this.semester = semester;
-    }
+//    public AgendaSekolah(int idAgendaSekolah, String judul, String deskripsi, LocalDate tanggalMulai, LocalDate tanggalSelesai, Integer idTahunAjaran, String semester) {
+//        this.idAgendaSekolah = idAgendaSekolah;
+//        this.judul = judul;
+//        this.deskripsi = deskripsi;
+//        this.tanggalMulai = tanggalMulai;
+//        this.tanggalSelesai = tanggalSelesai;
+//        this.idTahunAjaran = idTahunAjaran;
+////        this.semester = semester;
+//    }
+
 
     // Constructor lengkap untuk mengambil dari DB (dengan join untuk tahunAjaranLengkap)
-    public AgendaSekolah(int idAgendaSekolah, String judul, String deskripsi, LocalDate tanggalMulai, LocalDate tanggalSelesai, Integer idTahunAjaran, String tahunAjaranLengkap, String semester) {
+    // tanpa semester
+    public AgendaSekolah(int idAgendaSekolah, String judul, String deskripsi,
+                         LocalDate tanggalMulai, LocalDate tanggalSelesai, Integer idTahunAjaran) {
         this.idAgendaSekolah = idAgendaSekolah;
         this.judul = judul;
         this.deskripsi = deskripsi;
         this.tanggalMulai = tanggalMulai;
         this.tanggalSelesai = tanggalSelesai;
         this.idTahunAjaran = idTahunAjaran;
-        this.tahunAjaranLengkap = tahunAjaranLengkap;
-        this.semester = semester;
+        // this.tahunAjaranLengkap = tahunAjaranLengkap;
+        // tahunAjaranLengkap will be null or needs to be set separately if desired
+        this.tahunAjaranLengkap = null; // Or you can leave it unset and rely on getter logic
+
+        //        this.semester = semester;
     }
 
 
@@ -51,8 +57,8 @@ public class AgendaSekolah {
     public void setTanggalSelesai(LocalDate tanggalSelesai) { this.tanggalSelesai = tanggalSelesai; }
     public Integer getIdTahunAjaran() { return idTahunAjaran; }
     public void setIdTahunAjaran(Integer idTahunAjaran) { this.idTahunAjaran = idTahunAjaran; }
-    public String getSemester() { return semester; }
-    public void setSemester(String semester) { this.semester = semester; }
+//    public String getSemester() { return semester; }
+//    public void setSemester(String semester) { this.semester = semester; }
     public String getTahunAjaranLengkap() { return tahunAjaranLengkap; }
     public void setTahunAjaranLengkap(String tahunAjaranLengkap) { this.tahunAjaranLengkap = tahunAjaranLengkap; }
 

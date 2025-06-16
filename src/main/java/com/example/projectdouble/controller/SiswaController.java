@@ -62,25 +62,20 @@ public class SiswaController implements Initializable {
     @FXML private TableView<Tugas> assignmentTable;
     @FXML private TableColumn<Tugas, String> assignmentTitleCol, assignmentDescCol, assignmentDeadlineCol;
     @FXML private ComboBox<TahunAjaran> extracurricularSchoolYearCombo;
-    @FXML private ComboBox<String> extracurricularSemesterCombo;
     @FXML private TableView<Ekstrakurikuler> extracurricularTable;
     @FXML private TableColumn<Ekstrakurikuler, String> extracurricularNameCol, extracurricularLevelCol, extracurricularMentorCol;
     @FXML private ComboBox<TahunAjaran> agendaSchoolYearCombo;
-    @FXML private ComboBox<String> agendaSemesterCombo;
     @FXML private TableView<AgendaSekolah> agendaTable;
     @FXML private TableColumn<AgendaSekolah, String> agendaContentCol, agendaStartCol, agendaEndCol;
     @FXML private TableView<JadwalKelas> scheduleTable;
     @FXML private TableColumn<JadwalKelas, String> scheduleDayCol, scheduleStartCol, scheduleEndCol, scheduleSubjectCol;
     @FXML private ComboBox<MataPelajaran> gradeSubjectCombo;
     @FXML private TableView<NilaiUjian> gradeTable;
-    @FXML private TableColumn<NilaiUjian, String> gradeExamCol, gradeSemesterCol;
     @FXML private TableColumn<NilaiUjian, BigDecimal> gradeGradeCol;
-    @FXML private ComboBox<String> reportSemesterCombo;
     @FXML private TextField reportClassField;
     @FXML private TableView<NilaiUjian> reportTable;
     @FXML private TableColumn<NilaiUjian, String> reportSubjectCol, reportExamCol;
     @FXML private TableColumn<NilaiUjian, BigDecimal> reportGradeCol;
-    @FXML private ComboBox<String> attendanceSemesterCombo;
     @FXML private TextField attendanceClassField;
     @FXML private TableView<Presensi> attendanceTable;
     @FXML private TableColumn<Presensi, String> attendanceDateCol, attendanceStatusCol;
@@ -166,7 +161,6 @@ public class SiswaController implements Initializable {
     private void setupAllUIComponents() {
         setupTableColumns();
         populateStaticComboBoxes();
-        addListeners();
     }
     private void setupTableColumns() {
         announcementTitleCol.setCellValueFactory(new PropertyValueFactory<>("judul"));
@@ -186,9 +180,7 @@ public class SiswaController implements Initializable {
         scheduleStartCol.setCellValueFactory(new PropertyValueFactory<>("jamMulai"));
         scheduleEndCol.setCellValueFactory(new PropertyValueFactory<>("jamSelesai"));
         scheduleSubjectCol.setCellValueFactory(new PropertyValueFactory<>("namaMapel"));
-        gradeExamCol.setCellValueFactory(new PropertyValueFactory<>("jenisUjian"));
         gradeGradeCol.setCellValueFactory(new PropertyValueFactory<>("nilai"));
-        gradeSemesterCol.setCellValueFactory(new PropertyValueFactory<>("semester"));
         reportSubjectCol.setCellValueFactory(new PropertyValueFactory<>("namaMapel"));
         reportExamCol.setCellValueFactory(new PropertyValueFactory<>("jenisUjian"));
         reportGradeCol.setCellValueFactory(new PropertyValueFactory<>("nilai"));
@@ -204,18 +196,8 @@ public class SiswaController implements Initializable {
         extracurricularSchoolYearCombo.setItems(allSchoolYears);
         agendaSchoolYearCombo.setItems(allSchoolYears);
         schoolYearHeaderCombo.setItems(allSchoolYears);
-        extracurricularSemesterCombo.getItems().addAll("Ganjil", "Genap");
-        agendaSemesterCombo.getItems().addAll("Ganjil", "Genap");
-        reportSemesterCombo.getItems().addAll("Semua Semester", "Ganjil", "Genap");
-        attendanceSemesterCombo.getItems().addAll("Semua Semester", "Ganjil", "Genap");
     }
-    private void addListeners() {
-        gradeSubjectCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> handleFilterGradeTable());
-        attendanceClassField.textProperty().addListener((observable, oldValue, newValue) -> handleFilterAttendanceTable());
-        attendanceSemesterCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> handleFilterAttendanceTable());
-        reportClassField.textProperty().addListener((obs, oldVal, newVal) -> handleFilterReportTable());
-        reportSemesterCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> handleFilterReportTable());
-    }
+
     private void loadInitialData() {
         announcementTable.setItems(FXCollections.observableArrayList(pengumumanDAO.getAllPengumuman()));
         agendaTable.setItems(FXCollections.observableArrayList(agendaSekolahDAO.getAllAgendaSekolah()));
@@ -267,31 +249,7 @@ public class SiswaController implements Initializable {
             gradeTable.setItems(FXCollections.observableArrayList(allNilai));
         }
     }
-    @FXML void handleFilterReportTable() {
-        FilteredList<NilaiUjian> filteredData = new FilteredList<>(masterReportList, n -> true);
-        String semesterFilter = reportSemesterCombo.getValue();
-        if (semesterFilter != null && !semesterFilter.equals("Semua Semester")) {
-            filteredData.setPredicate(nilai -> nilai.getSemester() != null && nilai.getSemester().equalsIgnoreCase(semesterFilter));
-        }
-        reportTable.setItems(filteredData);
-    }
-    @FXML void handleFilterAttendanceTable() {
-        FilteredList<Presensi> filteredData = new FilteredList<>(masterAttendanceList, p -> true);
-        filteredData.setPredicate(presensi -> {
-            String classFilter = attendanceClassField.getText().toLowerCase();
-            String semesterFilter = attendanceSemesterCombo.getValue();
-            boolean classMatch = classFilter.isEmpty() || (presensi.getNamaKelas() != null && presensi.getNamaKelas().toLowerCase().contains(classFilter));
-            if (!classMatch) return false;
-            boolean semesterMatch = true;
-            if (semesterFilter != null && !semesterFilter.equals("Semua Semester")) {
-                int month = presensi.getTanggal().getMonthValue();
-                if (semesterFilter.equalsIgnoreCase("Ganjil")) semesterMatch = month >= 7;
-                else if (semesterFilter.equalsIgnoreCase("Genap")) semesterMatch = month <= 6;
-            }
-            return semesterMatch;
-        });
-        attendanceTable.setItems(filteredData);
-    }
+
     @FXML void handleLogoutButtonAction(ActionEvent event) {
         try {
             SessionManager.clearSession();

@@ -511,7 +511,7 @@ public class SiswaDAO {
      * @param semester Semester.
      * @return List objek Siswa dalam kelas tersebut.
      */
-    public List<Siswa> getStudentsInClass(int idKelas, int idTahunAjaran, String semester) {
+    public List<Siswa> getStudentsInClass(int idKelas, int idTahunAjaran) {
 //        List<Siswa> siswaList = new ArrayList<>();
 //        // ASUMSI: ada tabel 'kelas_siswa'
 //        String sql = "SELECT s.nis, s.nama, s.jenis_kelamin, s.tempat_lahir, s.tanggal_lahir, s.alamat, " +
@@ -566,7 +566,6 @@ public class SiswaDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idKelas);
             stmt.setInt(2, idTahunAjaran);
-            stmt.setString(3, semester);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 siswaList.add(new Siswa(
