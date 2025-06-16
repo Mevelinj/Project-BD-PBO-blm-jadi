@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2e3293d3-2498-40c1-8d7b-f325d7442f5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/DAO/NilaiUjianDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/DAO/NilaiUjianDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/DAO/TahunAjaranDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/DAO/TahunAjaranDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/model/TahunAjaran.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectdouble/model/TahunAjaran.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

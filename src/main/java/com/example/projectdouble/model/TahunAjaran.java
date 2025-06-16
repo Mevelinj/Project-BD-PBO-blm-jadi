@@ -6,11 +6,12 @@ public class TahunAjaran {
     private int tahunSelesai;
     private String tahunGanjilGenap; // Contoh: 'Ganjil', 'Genap'
 
-    public TahunAjaran(int idTahunAjaran, int tahunMulai, int tahunSelesai, String tahunGanjilGenap) {
+    //hapus tahunganjilgenapnya
+    public TahunAjaran(int idTahunAjaran, int tahunMulai, int tahunSelesai ) {
         this.idTahunAjaran = idTahunAjaran;
         this.tahunMulai = tahunMulai;
         this.tahunSelesai = tahunSelesai;
-        this.tahunGanjilGenap = tahunGanjilGenap;
+        //this.tahunGanjilGenap = tahunGanjilGenap;
     }
 
     // Getters and Setters
@@ -38,13 +39,13 @@ public class TahunAjaran {
         this.tahunSelesai = tahunSelesai;
     }
 
-    public String getTahunGanjilGenap() {
-        return tahunGanjilGenap;
-    }
+//    public String getTahunGanjilGenap() {
+//        return tahunGanjilGenap;
+//    }
 
-    public void setTahunGanjilGenap(String tahunGanjilGenap) {
-        this.tahunGanjilGenap = tahunGanjilGenap;
-    }
+//    public void setTahunGanjilGenap(String tahunGanjilGenap) {
+//        this.tahunGanjilGenap = tahunGanjilGenap;
+//    }
 
     public String getTahunLengkap() {
         return tahunMulai + "/" + tahunSelesai;
@@ -52,7 +53,7 @@ public class TahunAjaran {
 
     @Override
     public String toString() {
-        return tahunMulai + "/" + tahunSelesai + " - " + tahunGanjilGenap; // Penting untuk ComboBox
+        return tahunMulai + "/" + tahunSelesai ; // Penting untuk ComboBox
     }
 
     @Override
