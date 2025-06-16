@@ -23,7 +23,7 @@ public class KelasDAO {
             stmt.setString(2, kelas.getTingkat());
             stmt.setString(3, kelas.getNipWaliKelas());
             stmt.setInt(4, kelas.getIdTahunAjaran());
-            stmt.setString(5, kelas.getSemester());
+            //stmt.setString(5, kelas.getSemester());
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -66,8 +66,8 @@ public class KelasDAO {
                         rs.getString("nip_guru"),
                         rs.getString("nama_wali_kelas"),
                         rs.getInt("id_tahun_ajaran"),
-                        rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester")
+                        rs.getString("tahun_ajaran_lengkap")
+                        //rs.getString("semester")
                 ));
             }
         } catch (SQLException e) {
@@ -102,8 +102,8 @@ public class KelasDAO {
                         rs.getString("nip_guru"),
                         rs.getString("nama_wali_kelas"),
                         rs.getInt("id_tahun_ajaran"),
-                        rs.getString("tahun_ajaran_lengkap"),
-                        rs.getString("semester")
+                        rs.getString("tahun_ajaran_lengkap")
+                        //rs.getString("semester")
                 );
             }
         } catch (SQLException e) {
@@ -127,7 +127,7 @@ public class KelasDAO {
             stmt.setString(2, kelas.getTingkat());
             stmt.setString(3, kelas.getNipWaliKelas());
             stmt.setInt(4, kelas.getIdTahunAjaran());
-            stmt.setString(5, kelas.getSemester());
+            //stmt.setString(5, kelas.getSemester());
             stmt.setInt(6, kelas.getIdKelas());
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
